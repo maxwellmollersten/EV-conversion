@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EV Conversion</title>
-  <meta name="description" content="Projekt: konvertering av bil till eldrift (EV conversion)." />
+  <title>Delprojekt 6 – Elmotor (1TE668)</title>
+  <meta name="description" content="Teknisk projektsida för Delprojekt 6: Elmotor i elbilsprojektet (Uppsala universitet). Fokus: BLDC-motor och hallsensorfäste." />
   <style>
     :root{
       --bg:#070a12;
@@ -75,7 +75,6 @@
     h3{margin:0 0 8px; font-size:14px; letter-spacing:.2px; color: rgba(234,240,255,.92)}
     p{margin:0 0 12px; color:var(--muted); line-height:1.65}
     ul{margin:0; padding-left:18px; color:var(--muted); line-height:1.7}
-
     .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
     .chip{
       font-size:12px;
@@ -111,7 +110,6 @@
     }
     @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
 
-    /* Inner "kort i kort" */
     .subcard{
       border-radius:16px;
       border:1px solid rgba(255,255,255,.14);
@@ -121,6 +119,23 @@
     }
     .subcard p{margin:0 0 10px}
     .subcard p:last-child{margin:0}
+
+    /* "Key facts" row */
+    .facts{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 860px){ .facts{grid-template-columns:1fr} }
+    .fact{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      padding:14px;
+    }
+    .fact b{display:block; font-size:16px}
+    .fact span{color:var(--muted); font-size:12px; line-height:1.5; display:block; margin-top:4px}
 
     /* Video */
     .videoGrid{
@@ -236,14 +251,14 @@
     <div class="topbar">
       <a class="brand" href="#top">
         <span class="logo" aria-hidden="true"></span>
-        <span>EV Conversion</span>
+        <span>Delprojekt 6 – Elmotor</span>
       </a>
       <nav aria-label="Navigering">
         <a class="pill" href="#overview">Översikt</a>
+        <a class="pill" href="#motor">Motor</a>
+        <a class="pill" href="#hall">Hallsensorfäste</a>
         <a class="pill" href="#media">Video</a>
         <a class="pill" href="#gallery">Galleri</a>
-        <a class="pill" href="#build">System</a>
-        <a class="pill" href="#docs">Dokumentation</a>
       </nav>
     </div>
   </header>
@@ -251,26 +266,144 @@
   <main id="top" class="wrap">
     <!-- OVERVIEW -->
     <section class="card pad" id="overview">
-      <h1>EV Conversion</h1>
+      <h1>Delprojekt 6: Elmotor (1TE668)</h1>
       <p>
-        Konvertering av en bensin-/dieselbil till eldrift. Fokus på systemdesign, säker HV-arkitektur, integration av
-        motor + inverter, batteripack + BMS, DC-DC, laddning och testplan.
+        Teknisk projektsida för elmotorgruppen i elbilsprojektet för civilingenjörsprogrammet i elektroteknik
+        (åk 1, HT2024–VT2025). Fokus här är <b>BLDC-motorn</b>, dess uppbyggnad och hur vi löste
+        <b>rotorpositionsmätning med hallsensorer</b>.
       </p>
 
       <div class="chips">
-        <span class="chip">HV-system</span>
-        <span class="chip">BMS</span>
-        <span class="chip">Motor + Inverter</span>
-        <span class="chip">DC-DC 12V</span>
-        <span class="chip">Laddning</span>
-        <span class="chip">Test & Safety</span>
+        <span class="chip">BLDC</span>
+        <span class="chip">Stator/rotor</span>
+        <span class="chip">Koncentrerad lindning (Y)</span>
+        <span class="chip">Hallsensorer</span>
+        <span class="chip">Back-EMF</span>
+        <span class="chip">CAD + 3D-print</span>
       </div>
 
       <div class="cta">
-        <!-- ÄNDRA till ditt repo / dokument -->
-        <a class="btn primary" href="https://github.com/yourname/ev-conversion" target="_blank" rel="noreferrer">Repo</a>
+        <!-- ÄNDRA: repo / rapport / bilagor -->
+        <a class="btn primary" href="#" target="_blank" rel="noreferrer">Rapport (PDF)</a>
+        <a class="btn" href="#hall">Min del: hallsensorfäste</a>
         <a class="btn" href="#gallery">Se galleri</a>
-        <a class="btn" href="#media">Se videos</a>
+      </div>
+
+      <div class="facts" aria-label="Nyckelfakta">
+        <div class="fact">
+          <b>Mål</b>
+          <span>≥ 20 kW mekanisk uteffekt, samt övervakning av temperatur, vridmoment och varvtal.</span>
+        </div>
+        <div class="fact">
+          <b>Resultat</b>
+          <span>Max ~18,6 kW mekanisk uteffekt och stabil drift; topphastighet ~40 km/h.</span>
+        </div>
+        <div class="fact">
+          <b>Min roll</b>
+          <span>Design, 3D-printning och montering av <b>hallsensorfäste</b> (rotorposition/varvtal).</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOTOR -->
+    <section class="card pad" id="motor" style="margin-top:14px">
+      <h2>Motor: uppbyggnad och funktion</h2>
+      <p>
+        Motorn är en borstlös likströmsmotor (BLDC) med laminerad stator/rotor, permanentmagneter i rotorn
+        och trefas lindning i statorn. Kommuteringen sker elektroniskt (via växelriktare) baserat på rotorposition.
+      </p>
+
+      <div class="grid">
+        <div class="subcard">
+          <h3>Stator</h3>
+          <ul>
+            <li>Laminerade skivor för reducerade virvelströmsförluster.</li>
+            <li><b>Koncentrerad lindning</b> enligt lindningsschema; trefas i <b>Y-koppling</b>.</li>
+            <li>Kortare lindningslängd → lägre kopparförluster (I²R).</li>
+          </ul>
+        </div>
+
+        <aside class="subcard">
+          <h3>Rotor</h3>
+          <ul>
+            <li>Laminerad rotor med magnetspår.</li>
+            <li>Totalt <b>40 magneter</b> fördelade i <b>8 spår</b> (5 per spår) → 8 magnetiska poler.</li>
+            <li>Magnetstopp för mekanisk fixering.</li>
+          </ul>
+        </aside>
+
+        <div class="subcard">
+          <h3>Kommutering</h3>
+          <ul>
+            <li>6-stegs kommutering: en fas +, en fas –, en fas flytande.</li>
+            <li>Rotorposition behövs för att växla faser vid rätt tidpunkt.</li>
+            <li>I detta projekt användes <b>hallsensorer</b> (inte sensorless back-EMF).</li>
+          </ul>
+        </div>
+
+        <aside class="subcard">
+          <h3>Back-EMF</h3>
+          <ul>
+            <li>Inducerad spänning proportionell mot vinkelhastighet.</li>
+            <li>Användes för att uppskatta <b>K<sub>e</sub></b> genom mätning med oscilloskop vid olika varvtal.</li>
+            <li>Line-to-line mätning gav annan nivå än line-to-neutral kravspec.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- HALL SENSOR BRACKET (YOUR CONTRIBUTION) -->
+    <section class="card pad" id="hall" style="margin-top:14px">
+      <h2>Min del: Hallsensorfäste (design + iteration)</h2>
+      <p>
+        Jag ansvarade för hallsensorfästet som monteras i statorn och placerar hallsensorerna på rätt avstånd
+        och djup för att detektera rotorns magnetfält. Fokus var <b>geometri, passform, vibrationstålighet</b>
+        och <b>repeterbar montering</b>.
+      </p>
+
+      <div class="grid">
+        <div class="subcard">
+          <h3>Krav & designmål</h3>
+          <ul>
+            <li>Passa i statorn och hållas fast av <b>friktion</b> (helst utan lim).</li>
+            <li>“Tunnel”/kanal för hallsensor + kabeldragning.</li>
+            <li>Tillräckligt djup in i statorn för stabil signal (nord/syd).</li>
+            <li>Klart vid FAT-tester och kunna justeras snabbt vid fel.</li>
+          </ul>
+        </div>
+
+        <aside class="subcard">
+          <h3>Iterationer (vad som hände)</h3>
+          <p>
+            Under FAT 1 satt fästen inklämda mellan lindningar, vilket gav fel höjd på vissa sensorer
+            (för långt från magnetfältet). Jag tog fram en ny design som gick ner i gapet
+            <b>under lindningarna</b> för att komma närmare rotorn.
+          </p>
+          <p>
+            Slutdesignen hade ca <b>22 mm bredd</b> (lite större än gapet). Genom att fila sidorna
+            kunde vi justera passningen för maximal friktion och stabilitet.
+          </p>
+        </aside>
+
+        <div class="subcard">
+          <h3>Tillverkning</h3>
+          <ul>
+            <li>CAD i <b>SolidWorks</b>.</li>
+            <li><b>3D-print</b> av fäste (PLA) för snabb iteration och låg kostnad.</li>
+            <li>Efterbearbetning (filning) för tight passform.</li>
+          </ul>
+        </div>
+
+        <aside class="subcard">
+          <h3>Varför det är viktigt</h3>
+          <p>
+            Hallsensorerna ger 3-bitars positionstillstånd (fasförskjutna 120° el.) som används för att
+            kommutera rätt. Fel placering ger missad detektion, fel timing och sämre moment/effektivitet.
+          </p>
+          <p>
+            Mekanisk stabilitet minskar också risken för signalstörningar från vibrationer.
+          </p>
+        </aside>
       </div>
     </section>
 
@@ -278,8 +411,8 @@
     <section class="card pad" id="media" style="margin-top:14px">
       <h2>Video</h2>
       <p>
-        Här kan du lägga in YouTube-klipp eller egna <code>.mp4</code> som visar t.ex. första “ready-to-drive”, test av precharge,
-        eller körning + data från logger.
+        Lägg in videos som visar t.ex. rotorpositionssignal, kommutering, FAT 2 test i testrigg eller
+        drift i bilen.
       </p>
       <div class="videoGrid" id="videoGrid"></div>
     </section>
@@ -287,67 +420,12 @@
     <!-- GALLERY (PHOTOS + CAPTIONS) -->
     <section class="card pad" id="gallery" style="margin-top:14px">
       <h2>Galleri</h2>
-      <p>Klicka på en bild för att se den större. Varje bild har en beskrivning under.</p>
-
+      <p>Klicka på en bild för att se den större. Lägg gärna in bilder på stator, rotor, magneter, lindning och hallsensorfästet.</p>
       <div class="gallery" id="galleryGrid"></div>
     </section>
 
-    <!-- SYSTEM / BUILD -->
-    <section class="card pad" id="build" style="margin-top:14px">
-      <h2>System</h2>
-
-      <div class="grid">
-        <div class="subcard">
-          <h3>Powertrain</h3>
-          <ul>
-            <li>Elmotor: <span class="muted">[modell / kW / Nm]</span></li>
-            <li>Inverter: <span class="muted">[modell], FOC</span></li>
-            <li>Transmission/adaptor: <span class="muted">[adapterplatta, koppling, mount]</span></li>
-            <li>Regenerativ broms: <span class="muted">[strategi / begränsningar]</span></li>
-          </ul>
-        </div>
-
-        <aside class="subcard">
-          <h3>HV-arkitektur</h3>
-          <p><b>Batteripack</b> <span class="muted">[t.ex. 96s, xx kWh usable], mekanisk infästning och kapsling.</span></p>
-          <p><b>Kontaktorer + precharge</b> <span class="muted">för säker uppstart och kontrollerad laddning av inverter-kondensatorer.</span></p>
-          <p><b>Skydd</b> <span class="muted">HV-säkring, HVIL, korrekt kabelarea, tydlig märkning.</span></p>
-        </aside>
-
-        <div class="subcard">
-          <h3>LV (12V) & hjälpsystem</h3>
-          <ul>
-            <li>DC-DC: <span class="muted">[HV→12V, A-rating]</span></li>
-            <li>12V-batteri + säkringsbox</li>
-            <li>Fläkt/pumpstyrning: <span class="muted">[PWM/relä, tempsensorer]</span></li>
-            <li>Instrumentering/loggning: <span class="muted">[CAN/serial, logger]</span></li>
-          </ul>
-        </div>
-
-        <aside class="subcard">
-          <h3>Laddning</h3>
-          <p><b>AC-laddning</b> <span class="muted">via OBC (on-board charger) och typ 2-port.</span></p>
-          <p><b>Interlocks</b> <span class="muted">pilot/proximity, laddspärr mot drive, HVIL.</span></p>
-          <p><b>BMS-limit</b> <span class="muted">charge current/voltage och cellbalansering.</span></p>
-        </aside>
-      </div>
-    </section>
-
-    <!-- DOCS -->
-    <section class="card pad" id="docs" style="margin-top:14px">
-      <h2>Kod & dokumentation</h2>
-      <p>Förslag på struktur i ditt repo:</p>
-      <ul>
-        <li><code>index.html</code> – den här sidan</li>
-        <li><code>media/</code> – bilder + ev. mp4</li>
-        <li><code>docs/</code> – scheman, wiring, testplan, BOM</li>
-        <li><code>cad/</code> – STEP/STL, ritningar</li>
-        <li><code>logs/</code> – CSV från BMS/CAN och plots</li>
-      </ul>
-    </section>
-
     <footer>
-      <div>© <span id="year"></span> EV Conversion</div>
+      <div>© <span id="year"></span> Delprojekt 6 – Elmotor</div>
       <div>GitHub Pages · <code>index.html</code></div>
     </footer>
   </main>
@@ -366,41 +444,39 @@
     const videos = [
       {
         type: "youtube",
-        title: "EV Conversion – Overview",
-        note: "Kort översikt av bygget (byta till din video).",
-        id: "dQw4w9WgXcQ" // <-- byt till din YouTube ID
+        title: "FAT 2 – test i testrigg",
+        note: "Exempelplats: byt till er video som visar testkörning/kommutering.",
+        id: "dQw4w9WgXcQ"
       },
       {
         type: "mp4",
-        title: "First power-on / precharge test",
-        note: "Exempel på lokal MP4 i media-mappen.",
-        src: "media/precharge_test.mp4" // <-- byt till din fil
+        title: "Hallsensor-signaler",
+        note: "Exempel: inspelning som visar hall-utgångar eller montage.",
+        src: "media/hall_signals.mp4"
       }
     ];
 
     // ==========================
     // GALLERY: lägg till bilder här
-    // src: thumbnail (kan vara samma som full)
-    // full: valfri separat “stor” bild
     // ==========================
     const photos = [
       {
-        src: "media/pack.jpg",
-        full: "media/pack.jpg",
-        alt: "Batteripack i kapsling",
-        caption: "Batteripack: layout, service disconnect och kabeldragning."
+        src: "media/hall_bracket.jpg",
+        full: "media/hall_bracket.jpg",
+        alt: "Hallsensorfäste (3D-print)",
+        caption: "Hallsensorfäste – slutdesign. Friktionspassning i statorn och kanal för sensor + kabel."
       },
       {
-        src: "media/contactor_box.jpg",
-        full: "media/contactor_box.jpg",
-        alt: "Kontaktorer och precharge",
-        caption: "Kontaktorbox med precharge-resistor, HV-säkring och HVIL."
+        src: "media/stator_winding.jpg",
+        full: "media/stator_winding.jpg",
+        alt: "Stator med lindning",
+        caption: "Stator med koncentrerad lindning (trefas, Y-koppling)."
       },
       {
-        src: "media/motor_mount.jpg",
-        full: "media/motor_mount.jpg",
-        alt: "Motor och infästning",
-        caption: "Motorinstallation och fästen, alignment mot drivlina."
+        src: "media/rotor_magnets.jpg",
+        full: "media/rotor_magnets.jpg",
+        alt: "Rotor med magneter",
+        caption: "Rotor med permanentmagneter (40 magneter i 8 spår) och magnetstopp."
       }
     ];
 
@@ -491,7 +567,6 @@
         `;
       }).join("");
 
-      // bind lightbox after render
       document.querySelectorAll("#galleryGrid img").forEach(img => {
         img.addEventListener("click", () => {
           const full = img.getAttribute("data-full") || img.src;
