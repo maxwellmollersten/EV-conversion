@@ -1,739 +1,535 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- prettier-ignore -->
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EV Conversion Project</title>
-  <meta name="description" content="Portfolio page documenting an EV conversion project: goals, system architecture, BOM, progress, and results." />
-
+  <title>EV Conversion</title>
+  <meta name="description" content="Projekt: konvertering av bil till eldrift (EV conversion)." />
   <style>
     :root{
-      --bg:#0b1020;
-      --panel:#121a33;
-      --panel2:#0f1730;
+      --bg:#070a12;
+      --panel:#0c1222;
       --text:#eaf0ff;
-      --muted:#b6c1e2;
+      --muted:#b7c1df;
       --line:rgba(255,255,255,.12);
-      --shadow: 0 18px 60px rgba(0,0,0,.5);
+      --shadow: 0 14px 40px rgba(0,0,0,.45);
       --radius:18px;
-      --max: 1050px;
+      --max: 980px;
       --a:#7aa2ff;
       --b:#6ef3c5;
-      --warn:#ffcf5a;
-      --bad:#ff6b6b;
-      --good:#59f0a5;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
-
-    *{ box-sizing:border-box; }
-    html, body { height:100%; }
+    *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: var(--sans);
-      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
       background:
-        radial-gradient(1200px 600px at 15% 10%, rgba(122,162,255,.20), transparent 55%),
-        radial-gradient(900px 500px at 80% 0%, rgba(110,243,197,.15), transparent 60%),
-        radial-gradient(900px 700px at 55% 105%, rgba(255,207,90,.08), transparent 50%),
-        var(--bg);
-      line-height:1.55;
+        radial-gradient(900px 500px at 10% 0%, rgba(122,162,255,.20), transparent 60%),
+        radial-gradient(900px 600px at 90% 5%, rgba(110,243,197,.16), transparent 60%),
+        linear-gradient(180deg, #050714 0%, var(--bg) 55%, #05060d 100%);
     }
-
-    a{ color: var(--a); text-decoration: none; }
-    a:hover{ text-decoration: underline; }
-
-    .wrap{
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 28px 18px 70px;
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:26px 18px 60px}
+    header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(12px);
+      background: rgba(5,7,20,.55);
+      border-bottom:1px solid var(--line);
     }
-
-    /* Top bar */
     .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom: 18px;
+      max-width:var(--max);
+      margin:0 auto;
+      padding:12px 18px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
     }
     .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:700;
-      letter-spacing:.2px;
+      display:flex; align-items:center; gap:10px;
+      text-decoration:none;
+      font-weight:800;
     }
     .logo{
-      width:34px; height:34px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(122,162,255,.95), rgba(110,243,197,.95));
-      box-shadow: 0 12px 26px rgba(0,0,0,.45);
-      position:relative;
-      flex:none;
+      width:14px; height:14px; border-radius:999px;
+      background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 0 0 6px rgba(122,162,255,.10);
     }
-    .logo:after{
-      content:"";
-      position:absolute;
-      inset:9px;
-      border-radius:8px;
-      background: rgba(11,16,32,.55);
-      border: 1px solid rgba(255,255,255,.18);
+    nav{display:flex; gap:10px; flex-wrap:wrap}
+    .pill{
+      text-decoration:none;
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid transparent;
     }
-    .nav{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:flex-end;
-    }
-    .chip{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.05);
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--muted);
-      transition: transform .12s ease, background .12s ease;
-    }
-    .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); text-decoration:none; }
-
-    /* Hero */
-    .hero{
-      border: 1px solid var(--line);
+    .pill:hover{color:var(--text); border-color:var(--line); background:rgba(255,255,255,.04)}
+    .card{
       border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
-      padding: 22px;
-      overflow:hidden;
-      position:relative;
-      margin-bottom: 16px;
-    }
-    .hero:before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background: radial-gradient(650px 260px at 15% 0%, rgba(122,162,255,.22), transparent 60%),
-                  radial-gradient(650px 260px at 85% 10%, rgba(110,243,197,.18), transparent 60%);
-      pointer-events:none;
-      filter: blur(0px);
-    }
-    .hero > *{ position:relative; }
-    .kicker{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:13px;
-      color: var(--muted);
-      padding: 6px 10px;
-      border-radius: 999px;
       border:1px solid var(--line);
-      background: rgba(0,0,0,.10);
+      background: rgba(12,18,34,.72);
+      box-shadow: var(--shadow);
+      overflow:hidden;
     }
-    .kicker b{ color: var(--text); font-weight:700; }
-    h1{
-      margin: 10px 0 8px;
-      font-size: clamp(28px, 4vw, 40px);
-      line-height:1.12;
-    }
-    .lead{
-      margin: 0 0 14px;
-      color: var(--muted);
-      max-width: 78ch;
-      font-size: 15.5px;
-    }
-    .ctaRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      font-weight:600;
-      font-size: 14px;
-      cursor:pointer;
-      user-select:none;
-      transition: transform .12s ease, background .12s ease, border-color .12s ease;
-    }
-    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
-    .btn.primary{
-      border-color: rgba(122,162,255,.55);
-      background: linear-gradient(135deg, rgba(122,162,255,.25), rgba(110,243,197,.18));
-    }
-    .btn small{
-      font-weight: 500;
-      color: var(--muted);
-    }
+    .pad{padding:22px}
+    h1{margin:0 0 10px; font-size: clamp(28px, 3.8vw, 44px); line-height:1.12}
+    h2{margin:0 0 10px; font-size:22px}
+    h3{margin:0 0 8px; font-size:14px; letter-spacing:.2px; color: rgba(234,240,255,.92)}
+    p{margin:0 0 12px; color:var(--muted); line-height:1.65}
+    ul{margin:0; padding-left:18px; color:var(--muted); line-height:1.7}
 
-    /* Grid sections */
+    .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .chip{
+      font-size:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: rgba(234,240,255,.92);
+    }
+    .cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      text-decoration:none;
+      font-weight:800;
+    }
+    .btn.primary{
+      border-color: rgba(122,162,255,.35);
+      background: linear-gradient(135deg, rgba(122,162,255,.20), rgba(110,243,197,.12));
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .btn:active{transform: translateY(0)}
+
     .grid{
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 16px;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
       align-items:start;
     }
-    @media (max-width: 950px){
-      .grid{ grid-template-columns: 1fr; }
-    }
+    @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
 
-    .card{
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(18,26,51,.55);
-      box-shadow: var(--shadow);
-      padding: 18px;
-    }
-    .card h2{
-      margin: 0 0 10px;
-      font-size: 18px;
-      letter-spacing:.2px;
-    }
-    .muted{ color: var(--muted); }
-    .sectionTitle{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 8px;
-    }
-    .badge{
-      font-family: var(--mono);
-      font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.14);
-      color: var(--muted);
-      white-space:nowrap;
-    }
-
-    /* Lists */
-    ul.clean{
-      margin: 10px 0 0;
-      padding-left: 18px;
-      color: var(--muted);
-    }
-    ul.clean li{ margin: 6px 0; }
-
-    /* Table */
-    .table{
-      width:100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      overflow:hidden;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.12);
-    }
-    .table th, .table td{
-      padding: 10px 10px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      vertical-align: top;
-      font-size: 13.5px;
-    }
-    .table th{
-      text-align:left;
-      color: var(--text);
+    /* Inner "kort i kort" */
+    .subcard{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.04);
-      font-weight:700;
+      box-shadow: 0 10px 24px rgba(0,0,0,.28);
+      padding:14px;
     }
-    .table td{ color: var(--muted); }
-    .table tr:last-child td{ border-bottom:none; }
+    .subcard p{margin:0 0 10px}
+    .subcard p:last-child{margin:0}
 
-    /* Progress */
-    .progress{
+    /* Video */
+    .videoGrid{
       display:grid;
-      gap:10px;
-      margin-top: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
     }
-    .step{
+    @media (max-width: 860px){ .videoGrid{grid-template-columns:1fr} }
+    .videoCard{
+      border-radius:16px;
       border:1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(0,0,0,.12);
-      padding: 10px 12px;
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
     }
-    .dot{
-      width: 10px; height:10px;
-      border-radius:999px;
-      margin-top: 6px;
-      background: rgba(255,255,255,.25);
-      border: 1px solid rgba(255,255,255,.20);
-      flex:none;
+    .videoCard .meta{padding:12px 14px}
+    .videoCard b{display:block; margin-bottom:4px}
+    .videoCard small{color:var(--muted); line-height:1.5}
+    .videoWrap{
+      position:relative;
+      width:100%;
+      aspect-ratio: 16/9;
+      background: rgba(0,0,0,.35);
     }
-    .dot.done{ background: rgba(89,240,165,.85); border-color: rgba(89,240,165,.25); }
-    .dot.wip{ background: rgba(255,207,90,.9); border-color: rgba(255,207,90,.25); }
-    .dot.todo{ background: rgba(255,255,255,.20); border-color: rgba(255,255,255,.20); }
-    .step b{ color: var(--text); }
-    .step .meta{
-      font-family: var(--mono);
-      font-size: 12px;
-      color: rgba(234,240,255,.75);
+    .videoWrap iframe,
+    .videoWrap video{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      border:0;
     }
 
-    /* Gallery placeholders */
+    /* Gallery */
     .gallery{
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap:14px;
+      margin-top:14px;
     }
-    @media (max-width: 650px){
-      .gallery{ grid-template-columns: 1fr; }
+    figure{margin:0}
+    .gallery img{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.15);
+      background:#000;
+      cursor: zoom-in;
+      transition: transform .15s ease, box-shadow .15s ease;
+      display:block;
     }
-    .ph{
-      border:1px dashed rgba(255,255,255,.22);
-      border-radius: 14px;
-      background: rgba(0,0,0,.10);
-      padding: 14px;
-      min-height: 96px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:6px;
+    .gallery img:hover{
+      transform: scale(1.02);
+      box-shadow: 0 12px 30px rgba(0,0,0,.45);
     }
-    .ph .cap{
-      font-size: 12.5px;
-      color: var(--muted);
+    figcaption{
+      margin-top:8px;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:13px;
     }
-    .ph code{
-      font-family: var(--mono);
+
+    /* Lightbox */
+    .lightbox{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.86);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      padding: 22px;
+    }
+    .lightbox.open{display:flex}
+    .lightbox img{
+      max-width: 94vw;
+      max-height: 92vh;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 20px 70px rgba(0,0,0,.55);
+      cursor: zoom-out;
+    }
+    .lightbox .hint{
+      position:fixed;
+      top:14px; right:14px;
+      color: rgba(234,240,255,.80);
       font-size: 12px;
-      color: rgba(234,240,255,.78);
-    }
-
-    /* Footer */
-    footer{
-      margin-top: 18px;
-      color: rgba(234,240,255,.55);
-      font-size: 13px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      padding: 6px 2px;
-    }
-
-    /* Small helpers */
-    .row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding: 6px 10px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      padding:8px 10px;
       border-radius: 999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.05);
-      color: var(--muted);
-      font-size: 12.5px;
-      font-family: var(--mono);
+      backdrop-filter: blur(10px);
     }
-    .sr-only{
-      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
-      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+
+    footer{
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      font-size:13px;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+    code{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.95em;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: rgba(234,240,255,.92);
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+  <header>
     <div class="topbar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>EV Conversion</div>
-      </div>
-      <nav class="nav" aria-label="Project navigation">
-        <a class="chip" href="#overview">Overview</a>
-        <a class="chip" href="#architecture">Architecture</a>
-        <a class="chip" href="#bom">BOM</a>
-        <a class="chip" href="#progress">Progress</a>
-        <a class="chip" href="#results">Results</a>
-        <a class="chip" href="#safety">Safety</a>
+      <a class="brand" href="#top">
+        <span class="logo" aria-hidden="true"></span>
+        <span>EV Conversion</span>
+      </a>
+      <nav aria-label="Navigering">
+        <a class="pill" href="#overview">Översikt</a>
+        <a class="pill" href="#media">Video</a>
+        <a class="pill" href="#gallery">Galleri</a>
+        <a class="pill" href="#build">System</a>
+        <a class="pill" href="#docs">Dokumentation</a>
       </nav>
     </div>
+  </header>
 
-    <header class="hero" id="top">
-      <div class="kicker"><b>Project</b> Electric Vehicle Conversion</div>
-      <h1>Converting an ICE vehicle to EV: drivetrain, power electronics, and controls</h1>
-      <p class="lead">
-        This page documents the system design, component selection, wiring/controls, test plan, and measured results.
-        Replace placeholder values with your vehicle, motor, controller, and battery pack details.
+  <main id="top" class="wrap">
+    <!-- OVERVIEW -->
+    <section class="card pad" id="overview">
+      <h1>EV Conversion</h1>
+      <p>
+        Konvertering av en bensin-/dieselbil till eldrift. Fokus på systemdesign, säker HV-arkitektur, integration av
+        motor + inverter, batteripack + BMS, DC-DC, laddning och testplan.
       </p>
 
-      <div class="ctaRow">
-        <button class="btn primary" id="btnCopySummary" type="button" aria-describedby="copyHelp">
-          Copy project summary
-          <small>(for CV/LinkedIn)</small>
-        </button>
-        <a class="btn" href="#gallery">Add photos / videos</a>
-        <a class="btn" href="#docs">Documentation</a>
-        <span class="sr-only" id="copyHelp">Copies a short project summary to your clipboard.</span>
+      <div class="chips">
+        <span class="chip">HV-system</span>
+        <span class="chip">BMS</span>
+        <span class="chip">Motor + Inverter</span>
+        <span class="chip">DC-DC 12V</span>
+        <span class="chip">Laddning</span>
+        <span class="chip">Test & Safety</span>
       </div>
 
-      <div class="row" style="margin-top:14px;">
-        <span class="pill">Voltage: <span id="vpack">400V</span></span>
-        <span class="pill">Energy: <span id="epack">35 kWh</span></span>
-        <span class="pill">Motor: <span id="motor">PMSM</span></span>
-        <span class="pill">Controller: <span id="inverter">FOC Inverter</span></span>
-        <span class="pill">Status: <span id="status">In progress</span></span>
+      <div class="cta">
+        <!-- ÄNDRA till ditt repo / dokument -->
+        <a class="btn primary" href="https://github.com/yourname/ev-conversion" target="_blank" rel="noreferrer">Repo</a>
+        <a class="btn" href="#gallery">Se galleri</a>
+        <a class="btn" href="#media">Se videos</a>
       </div>
-    </header>
+    </section>
 
-    <div class="grid">
-      <section class="card" id="overview">
-        <div class="sectionTitle">
-          <h2>Overview</h2>
-          <span class="badge">why + what</span>
-        </div>
-        <p class="muted" style="margin:0;">
-          Goal: replace the internal combustion drivetrain with an electric motor + inverter and a high-voltage battery
-          system while preserving vehicle usability (12V accessories, HVAC where applicable), safety, and serviceability.
-        </p>
+    <!-- MEDIA (VIDEOS) -->
+    <section class="card pad" id="media" style="margin-top:14px">
+      <h2>Video</h2>
+      <p>
+        Här kan du lägga in YouTube-klipp eller egna <code>.mp4</code> som visar t.ex. första “ready-to-drive”, test av precharge,
+        eller körning + data från logger.
+      </p>
+      <div class="videoGrid" id="videoGrid"></div>
+    </section>
 
-        <ul class="clean">
-          <li><b>Vehicle:</b> <span class="muted">[Make/Model/Year]</span></li>
-          <li><b>Target performance:</b> <span class="muted">[0–100 km/h], [top speed], [range]</span></li>
-          <li><b>Constraints:</b> <span class="muted">pack volume, mass, cooling, cost, regulations/inspection</span></li>
-          <li><b>Key engineering focus:</b> <span class="muted">HV safety, wiring, BMS integration, control signals, testing</span></li>
-        </ul>
-      </section>
+    <!-- GALLERY (PHOTOS + CAPTIONS) -->
+    <section class="card pad" id="gallery" style="margin-top:14px">
+      <h2>Galleri</h2>
+      <p>Klicka på en bild för att se den större. Varje bild har en beskrivning under.</p>
 
-      <aside class="card" id="quickfacts">
-        <div class="sectionTitle">
-          <h2>Quick Facts</h2>
-          <span class="badge">at a glance</span>
-        </div>
+      <div class="gallery" id="galleryGrid"></div>
+    </section>
 
-        <table class="table" aria-label="Quick facts table">
-          <tr>
-            <th>Item</th>
-            <th>Value</th>
-          </tr>
-          <tr>
-            <td>Pack nominal</td>
-            <td><span class="muted">[e.g., 96s, 355V nominal]</span></td>
-          </tr>
-          <tr>
-            <td>Pack max</td>
-            <td><span class="muted">[e.g., 403V @ 4.2V/cell]</span></td>
-          </tr>
-          <tr>
-            <td>Motor peak</td>
-            <td><span class="muted">[kW], [Nm]</span></td>
-          </tr>
-          <tr>
-            <td>Inverter</td>
-            <td><span class="muted">[model], FOC</span></td>
-          </tr>
-          <tr>
-            <td>Charging</td>
-            <td><span class="muted">[AC OBC kW], [DC optional]</span></td>
-          </tr>
-          <tr>
-            <td>Cooling</td>
-            <td><span class="muted">[radiator + pump], [separate loops?]</span></td>
-          </tr>
-          <tr>
-            <td>Low-voltage</td>
-            <td><span class="muted">DC-DC 400V→12V, 12V battery</span></td>
-          </tr>
-        </table>
-      </aside>
+    <!-- SYSTEM / BUILD -->
+    <section class="card pad" id="build" style="margin-top:14px">
+      <h2>System</h2>
 
-      <section class="card" id="architecture" style="grid-column: 1 / -1;">
-        <div class="sectionTitle">
-          <h2>System Architecture</h2>
-          <span class="badge">blocks + interfaces</span>
+      <div class="grid">
+        <div class="subcard">
+          <h3>Powertrain</h3>
+          <ul>
+            <li>Elmotor: <span class="muted">[modell / kW / Nm]</span></li>
+            <li>Inverter: <span class="muted">[modell], FOC</span></li>
+            <li>Transmission/adaptor: <span class="muted">[adapterplatta, koppling, mount]</span></li>
+            <li>Regenerativ broms: <span class="muted">[strategi / begränsningar]</span></li>
+          </ul>
         </div>
 
-        <p class="muted" style="margin:0;">
-          High-level power path and control interfaces. Use this as a wiring checklist.
-        </p>
+        <aside class="subcard">
+          <h3>HV-arkitektur</h3>
+          <p><b>Batteripack</b> <span class="muted">[t.ex. 96s, xx kWh usable], mekanisk infästning och kapsling.</span></p>
+          <p><b>Kontaktorer + precharge</b> <span class="muted">för säker uppstart och kontrollerad laddning av inverter-kondensatorer.</span></p>
+          <p><b>Skydd</b> <span class="muted">HV-säkring, HVIL, korrekt kabelarea, tydlig märkning.</span></p>
+        </aside>
 
-        <table class="table" aria-label="System architecture table">
-          <tr>
-            <th>Subsystem</th>
-            <th>Main components</th>
-            <th>Key signals / interfaces</th>
-          </tr>
-          <tr>
-            <td>High Voltage (HV)</td>
-            <td>Battery pack, contactors, precharge, fuse, HV junction</td>
-            <td>BMS enables, HVIL, pack voltage/current sensing</td>
-          </tr>
-          <tr>
-            <td>Traction</td>
-            <td>Motor, inverter, gearbox/adaptor plate, mounts</td>
-            <td>Throttle, brake, direction, CAN (if used), resolver/encoder</td>
-          </tr>
-          <tr>
-            <td>Charging</td>
-            <td>Charge port, OBC, charge controller, relays</td>
-            <td>Pilot/proximity, charge interlock, BMS charge limits</td>
-          </tr>
-          <tr>
-            <td>Low Voltage (12V)</td>
-            <td>DC-DC, 12V battery, fusing, LV harness</td>
-            <td>Ignition, accessory bus, safety relays, indicators</td>
-          </tr>
-          <tr>
-            <td>Thermal</td>
-            <td>Pumps, radiator, fans, coolant lines, sensors</td>
-            <td>Temperature feedback, fan PWM, pump control</td>
-          </tr>
-          <tr>
-            <td>Controls / UI</td>
-            <td>Drive selector, dash indicators, data logging</td>
-            <td>CAN / UART logging, fault states, e-stop logic</td>
-          </tr>
-        </table>
-      </section>
-
-      <section class="card" id="bom">
-        <div class="sectionTitle">
-          <h2>Bill of Materials</h2>
-          <span class="badge">core parts</span>
+        <div class="subcard">
+          <h3>LV (12V) & hjälpsystem</h3>
+          <ul>
+            <li>DC-DC: <span class="muted">[HV→12V, A-rating]</span></li>
+            <li>12V-batteri + säkringsbox</li>
+            <li>Fläkt/pumpstyrning: <span class="muted">[PWM/relä, tempsensorer]</span></li>
+            <li>Instrumentering/loggning: <span class="muted">[CAN/serial, logger]</span></li>
+          </ul>
         </div>
 
-        <ul class="clean">
-          <li><b>Motor + inverter:</b> <span class="muted">[model], peak [kW], cooling [air/liquid]</span></li>
-          <li><b>Battery pack:</b> <span class="muted">[cell type], [series/parallel], busbars, enclosure</span></li>
-          <li><b>BMS:</b> <span class="muted">cell monitoring, current sensor, contactor control</span></li>
-          <li><b>Contactors + precharge:</b> <span class="muted">main + precharge contactor, resistor, relay</span></li>
-          <li><b>Protection:</b> <span class="muted">HV fuse, HVIL, insulation monitoring (optional)</span></li>
-          <li><b>DC-DC:</b> <span class="muted">HV→12V with sufficient current for accessories</span></li>
-          <li><b>Charging:</b> <span class="muted">Type 2 inlet, OBC, pilot/proximity circuit</span></li>
-          <li><b>Cabling:</b> <span class="muted">HV orange cable, lugs, heatshrink, shielding where needed</span></li>
-        </ul>
+        <aside class="subcard">
+          <h3>Laddning</h3>
+          <p><b>AC-laddning</b> <span class="muted">via OBC (on-board charger) och typ 2-port.</span></p>
+          <p><b>Interlocks</b> <span class="muted">pilot/proximity, laddspärr mot drive, HVIL.</span></p>
+          <p><b>BMS-limit</b> <span class="muted">charge current/voltage och cellbalansering.</span></p>
+        </aside>
+      </div>
+    </section>
 
-        <p class="muted" style="margin:12px 0 0;">
-          Tip: keep a separate spreadsheet for exact part numbers, ratings, and suppliers.
-        </p>
-      </section>
-
-      <section class="card" id="progress">
-        <div class="sectionTitle">
-          <h2>Progress Log</h2>
-          <span class="badge">milestones</span>
-        </div>
-
-        <div class="progress" role="list">
-          <div class="step" role="listitem">
-            <div class="dot done" aria-hidden="true"></div>
-            <div>
-              <b>Mechanical integration</b>
-              <div class="meta">adapter plate • mounts • drivetrain alignment</div>
-              <div class="muted">[Short note: what you measured/changed, tolerances checked, lessons learned]</div>
-            </div>
-          </div>
-
-          <div class="step" role="listitem">
-            <div class="dot wip" aria-hidden="true"></div>
-            <div>
-              <b>HV pack + contactor box</b>
-              <div class="meta">precharge • fuse • HVIL routing</div>
-              <div class="muted">[Short note: insulation, enclosure, service disconnect, safety checks]</div>
-            </div>
-          </div>
-
-          <div class="step" role="listitem">
-            <div class="dot todo" aria-hidden="true"></div>
-            <div>
-              <b>Controls + first drive</b>
-              <div class="meta">throttle mapping • regen • fault handling</div>
-              <div class="muted">[Short note: test plan, what “ready-to-drive” sequence looks like]</div>
-            </div>
-          </div>
-
-          <div class="step" role="listitem">
-            <div class="dot todo" aria-hidden="true"></div>
-            <div>
-              <b>Charging + thermal validation</b>
-              <div class="meta">OBC • coolant loop • sustained load</div>
-              <div class="muted">[Short note: temperatures, fan control, derating behavior]</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" id="gallery" style="grid-column: 1 / -1;">
-        <div class="sectionTitle">
-          <h2>Gallery</h2>
-          <span class="badge">photos • videos</span>
-        </div>
-
-        <p class="muted" style="margin:0;">
-          Replace these placeholders with your images (e.g., /img/pack.jpg) or embed a YouTube demo.
-        </p>
-
-        <div class="gallery" aria-label="Gallery placeholders">
-          <div class="ph">
-            <div class="cap"><b>Motor + mounts</b> — show alignment and bracket design</div>
-            <code>&lt;img src="img/motor.jpg" alt="Motor installation"&gt;</code>
-          </div>
-          <div class="ph">
-            <div class="cap"><b>Battery enclosure</b> — pack layout, service disconnect, HVIL</div>
-            <code>&lt;img src="img/pack.jpg" alt="Battery pack"&gt;</code>
-          </div>
-          <div class="ph">
-            <div class="cap"><b>Wiring + contactors</b> — precharge, fusing, routing</div>
-            <code>&lt;img src="img/contactor-box.jpg" alt="Contactor box"&gt;</code>
-          </div>
-        </div>
-      </section>
-
-      <section class="card" id="results">
-        <div class="sectionTitle">
-          <h2>Results & Measurements</h2>
-          <span class="badge">data</span>
-        </div>
-
-        <ul class="clean">
-          <li><b>Pack sag under load:</b> <span class="muted">[V drop] at [A] for [s]</span></li>
-          <li><b>Inverter / motor temps:</b> <span class="muted">[°C] steady-state at [kW]</span></li>
-          <li><b>Energy consumption:</b> <span class="muted">[Wh/km] mixed driving</span></li>
-          <li><b>Range estimate:</b> <span class="muted">[km] from usable [kWh]</span></li>
-          <li><b>Charging:</b> <span class="muted">[kW], [time 10–80%]</span></li>
-        </ul>
-
-        <p class="muted" style="margin:12px 0 0;">
-          Add a plot screenshot or a short table from your data logger (CAN, shunt sensor, BMS logs).
-        </p>
-      </section>
-
-      <section class="card" id="safety">
-        <div class="sectionTitle">
-          <h2>Safety & Test Plan</h2>
-          <span class="badge">process</span>
-        </div>
-
-        <ul class="clean">
-          <li><b>HV safety:</b> insulation checks, proper fusing, correct cable rating, strain relief, labeling.</li>
-          <li><b>Interlocks:</b> HVIL loop, service disconnect, e-stop behavior, “ready-to-drive” indicators.</li>
-          <li><b>Precharge validation:</b> verify capacitor charge profile and contactor timing.</li>
-          <li><b>Functional tests:</b> throttle plausibility, brake switch, direction logic, regen limits.</li>
-          <li><b>Failure modes:</b> contactor weld detection, overcurrent, overtemp, BMS fault handling.</li>
-        </ul>
-
-        <p class="muted" style="margin:12px 0 0;">
-          Make sure your implementation follows applicable electrical safety practices and any local inspection rules.
-        </p>
-      </section>
-
-      <section class="card" id="docs" style="grid-column: 1 / -1;">
-        <div class="sectionTitle">
-          <h2>Documentation</h2>
-          <span class="badge">links</span>
-        </div>
-
-        <ul class="clean">
-          <li><b>Repo:</b> <span class="muted"><a href="#" id="repoLink">[GitHub link]</a></span></li>
-          <li><b>CAD / drawings:</b> <span class="muted">[SolidWorks/STEP files]</span></li>
-          <li><b>Wiring diagrams:</b> <span class="muted">[PDF link]</span></li>
-          <li><b>Test logs:</b> <span class="muted">[CSV / plots]</span></li>
-        </ul>
-
-        <div class="row" style="margin-top:12px;">
-          <button class="btn" id="btnPrint" type="button">Print / Save as PDF</button>
-          <button class="btn" id="btnTogglePlaceholders" type="button">Toggle placeholders</button>
-        </div>
-      </section>
-    </div>
+    <!-- DOCS -->
+    <section class="card pad" id="docs" style="margin-top:14px">
+      <h2>Kod & dokumentation</h2>
+      <p>Förslag på struktur i ditt repo:</p>
+      <ul>
+        <li><code>index.html</code> – den här sidan</li>
+        <li><code>media/</code> – bilder + ev. mp4</li>
+        <li><code>docs/</code> – scheman, wiring, testplan, BOM</li>
+        <li><code>cad/</code> – STEP/STL, ritningar</li>
+        <li><code>logs/</code> – CSV från BMS/CAN och plots</li>
+      </ul>
+    </section>
 
     <footer>
-      <div>© <span id="year"></span> EV Conversion Project</div>
-      <div class="muted">Built as a single <span style="font-family:var(--mono);">index.html</span> file.</div>
+      <div>© <span id="year"></span> EV Conversion</div>
+      <div>GitHub Pages · <code>index.html</code></div>
     </footer>
+  </main>
+
+  <!-- Lightbox overlay -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="hint">Klicka eller tryck ESC för att stänga</div>
+    <img id="lightboxImg" alt="">
   </div>
 
   <script>
-    // --- Edit these values to match your project quickly ---
-    const PROJECT = {
-      packVoltage: "355V nominal",
-      packEnergy: "35 kWh usable",
-      motorType: "PMSM",
-      inverterType: "FOC inverter",
-      status: "In progress",
-      repoUrl: "https://github.com/yourname/ev-conversion",
-      summary: [
-        "EV Conversion Project — designed and integrated an electric drivetrain into an existing vehicle.",
-        "Defined HV architecture (pack, contactors, precharge, fusing, HVIL), integrated BMS + DC-DC + charging,",
-        "and developed a validation plan covering interlocks, precharge timing, throttle plausibility, and thermal limits."
-      ].join(" ")
-    };
+    // ==========================
+    // VIDEO: lägg till videos här
+    // type: "youtube" eller "mp4"
+    // ==========================
+    const videos = [
+      {
+        type: "youtube",
+        title: "EV Conversion – Overview",
+        note: "Kort översikt av bygget (byta till din video).",
+        id: "dQw4w9WgXcQ" // <-- byt till din YouTube ID
+      },
+      {
+        type: "mp4",
+        title: "First power-on / precharge test",
+        note: "Exempel på lokal MP4 i media-mappen.",
+        src: "media/precharge_test.mp4" // <-- byt till din fil
+      }
+    ];
 
-    // Populate hero pills
-    document.getElementById("vpack").textContent = PROJECT.packVoltage;
-    document.getElementById("epack").textContent = PROJECT.packEnergy;
-    document.getElementById("motor").textContent = PROJECT.motorType;
-    document.getElementById("inverter").textContent = PROJECT.inverterType;
-    document.getElementById("status").textContent = PROJECT.status;
+    // ==========================
+    // GALLERY: lägg till bilder här
+    // src: thumbnail (kan vara samma som full)
+    // full: valfri separat “stor” bild
+    // ==========================
+    const photos = [
+      {
+        src: "media/pack.jpg",
+        full: "media/pack.jpg",
+        alt: "Batteripack i kapsling",
+        caption: "Batteripack: layout, service disconnect och kabeldragning."
+      },
+      {
+        src: "media/contactor_box.jpg",
+        full: "media/contactor_box.jpg",
+        alt: "Kontaktorer och precharge",
+        caption: "Kontaktorbox med precharge-resistor, HV-säkring och HVIL."
+      },
+      {
+        src: "media/motor_mount.jpg",
+        full: "media/motor_mount.jpg",
+        alt: "Motor och infästning",
+        caption: "Motorinstallation och fästen, alignment mot drivlina."
+      }
+    ];
 
-    // Repo link
-    const repoLink = document.getElementById("repoLink");
-    repoLink.href = PROJECT.repoUrl;
-    repoLink.textContent = PROJECT.repoUrl;
+    const videoGrid = document.getElementById("videoGrid");
+    const galleryGrid = document.getElementById("galleryGrid");
 
-    // Footer year
+    function esc(s){
+      return (s || "").replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    function renderVideos(){
+      if(!videos.length){
+        videoGrid.innerHTML = `
+          <div class="videoCard">
+            <div class="meta">
+              <b>Inga videos inlagda än</b>
+              <small>Lägg till objekt i listan <code>videos</code> i koden.</small>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      videoGrid.innerHTML = videos.map(v => {
+        const title = esc(v.title || "Video");
+        const note  = esc(v.note || "");
+        let media = "";
+
+        if(v.type === "youtube"){
+          const id = esc(v.id || "");
+          media = `
+            <div class="videoWrap">
+              <iframe
+                src="https://www.youtube.com/embed/${id}"
+                title="${title}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+              </iframe>
+            </div>
+          `;
+        } else if(v.type === "mp4"){
+          const src = esc(v.src || "");
+          media = `
+            <div class="videoWrap">
+              <video controls preload="metadata">
+                <source src="${src}" type="video/mp4">
+                Din webbläsare stödjer inte video-taggen.
+              </video>
+            </div>
+          `;
+        }
+
+        return `
+          <article class="videoCard">
+            ${media}
+            <div class="meta">
+              <b>${title}</b>
+              <small>${note}</small>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderGallery(){
+      if(!photos.length){
+        galleryGrid.innerHTML = `
+          <div class="subcard">
+            <h3>Inga bilder inlagda än</h3>
+            <p>Lägg till objekt i listan <code>photos</code>. Lägg dina bilder i <code>media/</code>.</p>
+          </div>
+        `;
+        return;
+      }
+
+      galleryGrid.innerHTML = photos.map(p => {
+        const src = esc(p.src || "");
+        const full = esc(p.full || p.src || "");
+        const alt = esc(p.alt || "");
+        const cap = esc(p.caption || "");
+        return `
+          <figure>
+            <img src="${src}" alt="${alt}" data-full="${full}">
+            <figcaption>${cap}</figcaption>
+          </figure>
+        `;
+      }).join("");
+
+      // bind lightbox after render
+      document.querySelectorAll("#galleryGrid img").forEach(img => {
+        img.addEventListener("click", () => {
+          const full = img.getAttribute("data-full") || img.src;
+          openLightbox(full, img.alt);
+        });
+      });
+    }
+
+    // ==========================
+    // LIGHTBOX
+    // ==========================
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+
+    function openLightbox(src, alt){
+      lightboxImg.src = src;
+      lightboxImg.alt = alt || "";
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox(){
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
+      lightboxImg.src = "";
+      document.body.style.overflow = "";
+    }
+
+    lightbox.addEventListener("click", closeLightbox);
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape") closeLightbox();
+    });
+
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Copy summary for CV/LinkedIn
-    document.getElementById("btnCopySummary").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(PROJECT.summary);
-        const btn = document.getElementById("btnCopySummary");
-        const old = btn.innerHTML;
-        btn.innerHTML = "Copied ✓ <small>(paste anywhere)</small>";
-        setTimeout(() => (btn.innerHTML = old), 1400);
-      }catch(e){
-        alert("Copy failed. Select and copy manually:\n\n" + PROJECT.summary);
-      }
-    });
-
-    // Print
-    document.getElementById("btnPrint").addEventListener("click", () => window.print());
-
-    // Toggle placeholder brackets to help you see what to replace
-    let placeholdersVisible = true;
-    document.getElementById("btnTogglePlaceholders").addEventListener("click", () => {
-      placeholdersVisible = !placeholdersVisible;
-      document.querySelectorAll(".muted").forEach(el => {
-        // Only hide placeholder-looking chunks. This is intentionally simple.
-        if (el.textContent.includes("[") && el.textContent.includes("]")) {
-          el.style.display = placeholdersVisible ? "" : "none";
-        }
-      });
-    });
-
-    // Smooth scrolling for in-page links
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener("click", (e) => {
-        const id = a.getAttribute("href");
-        if (!id || id === "#") return;
-        const el = document.querySelector(id);
-        if (!el) return;
-        e.preventDefault();
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        history.replaceState(null, "", id);
-      });
-    });
+    renderVideos();
+    renderGallery();
   </script>
 </body>
 </html>
-
