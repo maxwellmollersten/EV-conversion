@@ -1,1 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EV Conversion Project</title>
+  <meta name="description" content="Portfolio page documenting an EV conversion project: goals, system architecture, BOM, progress, and results." />
+
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121a33;
+      --panel2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#b6c1e2;
+      --line:rgba(255,255,255,.12);
+      --shadow: 0 18px 60px rgba(0,0,0,.5);
+      --radius:18px;
+      --max: 1050px;
+      --a:#7aa2ff;
+      --b:#6ef3c5;
+      --warn:#ffcf5a;
+      --bad:#ff6b6b;
+      --good:#59f0a5;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing:border-box; }
+    html, body { height:100%; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% 10%, rgba(122,162,255,.20), transparent 55%),
+        radial-gradient(900px 500px at 80% 0%, rgba(110,243,197,.15), transparent 60%),
+        radial-gradient(900px 700px at 55% 105%, rgba(255,207,90,.08), transparent 50%),
+        var(--bg);
+      line-height:1.55;
+    }
+
+    a{ color: var(--a); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 18px 70px;
+    }
+
+    /* Top bar */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-bottom: 18px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .logo{
+      width:34px; height:34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(122,162,255,.95), rgba(110,243,197,.95));
+      box-shadow: 0 12px 26px rgba(0,0,0,.45);
+      position:relative;
+      flex:none;
+    }
+    .logo:after{
+      content:"";
+      position:absolute;
+      inset:9px;
+      border-radius:8px;
+      background: rgba(11,16,32,.55);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--muted);
+      transition: transform .12s ease, background .12s ease;
+    }
+    .chip:hover{ transform: translateY(-1px); background: rgba(255,255,255,.08); text-decoration:none; }
+
+    /* Hero */
+    .hero{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      padding: 22px;
+      overflow:hidden;
+      position:relative;
+      margin-bottom: 16px;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(650px 260px at 15% 0%, rgba(122,162,255,.22), transparent 60%),
+                  radial-gradient(650px 260px at 85% 10%, rgba(110,243,197,.18), transparent 60%);
+      pointer-events:none;
+      filter: blur(0px);
+    }
+    .hero > *{ position:relative; }
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.10);
+    }
+    .kicker b{ color: var(--text); font-weight:700; }
+    h1{
+      margin: 10px 0 8px;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height:1.12;
+    }
+    .lead{
+      margin: 0 0 14px;
+      color: var(--muted);
+      max-width: 78ch;
+      font-size: 15.5px;
+    }
+    .ctaRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight:600;
+      font-size: 14px;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
+    .btn.primary{
+      border-color: rgba(122,162,255,.55);
+      background: linear-gradient(135deg, rgba(122,162,255,.25), rgba(110,243,197,.18));
+    }
+    .btn small{
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    /* Grid sections */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      align-items:start;
+    }
+    @media (max-width: 950px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(18,26,51,.55);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .card h2{
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .muted{ color: var(--muted); }
+    .sectionTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.14);
+      color: var(--muted);
+      white-space:nowrap;
+    }
+
+    /* Lists */
+    ul.clean{
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    ul.clean li{ margin: 6px 0; }
+
+    /* Table */
+    .table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      overflow:hidden;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.12);
+    }
+    .table th, .table td{
+      padding: 10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      vertical-align: top;
+      font-size: 13.5px;
+    }
+    .table th{
+      text-align:left;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+      font-weight:700;
+    }
+    .table td{ color: var(--muted); }
+    .table tr:last-child td{ border-bottom:none; }
+
+    /* Progress */
+    .progress{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .step{
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(0,0,0,.12);
+      padding: 10px 12px;
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .dot{
+      width: 10px; height:10px;
+      border-radius:999px;
+      margin-top: 6px;
+      background: rgba(255,255,255,.25);
+      border: 1px solid rgba(255,255,255,.20);
+      flex:none;
+    }
+    .dot.done{ background: rgba(89,240,165,.85); border-color: rgba(89,240,165,.25); }
+    .dot.wip{ background: rgba(255,207,90,.9); border-color: rgba(255,207,90,.25); }
+    .dot.todo{ background: rgba(255,255,255,.20); border-color: rgba(255,255,255,.20); }
+    .step b{ color: var(--text); }
+    .step .meta{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(234,240,255,.75);
+    }
+
+    /* Gallery placeholders */
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    @media (max-width: 650px){
+      .gallery{ grid-template-columns: 1fr; }
+    }
+    .ph{
+      border:1px dashed rgba(255,255,255,.22);
+      border-radius: 14px;
+      background: rgba(0,0,0,.10);
+      padding: 14px;
+      min-height: 96px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:6px;
+    }
+    .ph .cap{
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .ph code{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(234,240,255,.78);
+    }
+
+    /* Footer */
+    footer{
+      margin-top: 18px;
+      color: rgba(234,240,255,.55);
+      font-size: 13px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding: 6px 2px;
+    }
+
+    /* Small helpers */
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 12.5px;
+      font-family: var(--mono);
+    }
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>EV Conversion</div>
+      </div>
+      <nav class="nav" aria-label="Project navigation">
+        <a class="chip" href="#overview">Overview</a>
+        <a class="chip" href="#architecture">Architecture</a>
+        <a class="chip" href="#bom">BOM</a>
+        <a class="chip" href="#progress">Progress</a>
+        <a class="chip" href="#results">Results</a>
+        <a class="chip" href="#safety">Safety</a>
+      </nav>
+    </div>
+
+    <header class="hero" id="top">
+      <div class="kicker"><b>Project</b> Electric Vehicle Conversion</div>
+      <h1>Converting an ICE vehicle to EV: drivetrain, power electronics, and controls</h1>
+      <p class="lead">
+        This page documents the system design, component selection, wiring/controls, test plan, and measured results.
+        Replace placeholder values with your vehicle, motor, controller, and battery pack details.
+      </p>
+
+      <div class="ctaRow">
+        <button class="btn primary" id="btnCopySummary" type="button" aria-describedby="copyHelp">
+          Copy project summary
+          <small>(for CV/LinkedIn)</small>
+        </button>
+        <a class="btn" href="#gallery">Add photos / videos</a>
+        <a class="btn" href="#docs">Documentation</a>
+        <span class="sr-only" id="copyHelp">Copies a short project summary to your clipboard.</span>
+      </div>
+
+      <div class="row" style="margin-top:14px;">
+        <span class="pill">Voltage: <span id="vpack">400V</span></span>
+        <span class="pill">Energy: <span id="epack">35 kWh</span></span>
+        <span class="pill">Motor: <span id="motor">PMSM</span></span>
+        <span class="pill">Controller: <span id="inverter">FOC Inverter</span></span>
+        <span class="pill">Status: <span id="status">In progress</span></span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card" id="overview">
+        <div class="sectionTitle">
+          <h2>Overview</h2>
+          <span class="badge">why + what</span>
+        </div>
+        <p class="muted" style="margin:0;">
+          Goal: replace the internal combustion drivetrain with an electric motor + inverter and a high-voltage battery
+          system while preserving vehicle usability (12V accessories, HVAC where applicable), safety, and serviceability.
+        </p>
+
+        <ul class="clean">
+          <li><b>Vehicle:</b> <span class="muted">[Make/Model/Year]</span></li>
+          <li><b>Target performance:</b> <span class="muted">[0–100 km/h], [top speed], [range]</span></li>
+          <li><b>Constraints:</b> <span class="muted">pack volume, mass, cooling, cost, regulations/inspection</span></li>
+          <li><b>Key engineering focus:</b> <span class="muted">HV safety, wiring, BMS integration, control signals, testing</span></li>
+        </ul>
+      </section>
+
+      <aside class="card" id="quickfacts">
+        <div class="sectionTitle">
+          <h2>Quick Facts</h2>
+          <span class="badge">at a glance</span>
+        </div>
+
+        <table class="table" aria-label="Quick facts table">
+          <tr>
+            <th>Item</th>
+            <th>Value</th>
+          </tr>
+          <tr>
+            <td>Pack nominal</td>
+            <td><span class="muted">[e.g., 96s, 355V nominal]</span></td>
+          </tr>
+          <tr>
+            <td>Pack max</td>
+            <td><span class="muted">[e.g., 403V @ 4.2V/cell]</span></td>
+          </tr>
+          <tr>
+            <td>Motor peak</td>
+            <td><span class="muted">[kW], [Nm]</span></td>
+          </tr>
+          <tr>
+            <td>Inverter</td>
+            <td><span class="muted">[model], FOC</span></td>
+          </tr>
+          <tr>
+            <td>Charging</td>
+            <td><span class="muted">[AC OBC kW], [DC optional]</span></td>
+          </tr>
+          <tr>
+            <td>Cooling</td>
+            <td><span class="muted">[radiator + pump], [separate loops?]</span></td>
+          </tr>
+          <tr>
+            <td>Low-voltage</td>
+            <td><span class="muted">DC-DC 400V→12V, 12V battery</span></td>
+          </tr>
+        </table>
+      </aside>
+
+      <section class="card" id="architecture" style="grid-column: 1 / -1;">
+        <div class="sectionTitle">
+          <h2>System Architecture</h2>
+          <span class="badge">blocks + interfaces</span>
+        </div>
+
+        <p class="muted" style="margin:0;">
+          High-level power path and control interfaces. Use this as a wiring checklist.
+        </p>
+
+        <table class="table" aria-label="System architecture table">
+          <tr>
+            <th>Subsystem</th>
+            <th>Main components</th>
+            <th>Key signals / interfaces</th>
+          </tr>
+          <tr>
+            <td>High Voltage (HV)</td>
+            <td>Battery pack, contactors, precharge, fuse, HV junction</td>
+            <td>BMS enables, HVIL, pack voltage/current sensing</td>
+          </tr>
+          <tr>
+            <td>Traction</td>
+            <td>Motor, inverter, gearbox/adaptor plate, mounts</td>
+            <td>Throttle, brake, direction, CAN (if used), resolver/encoder</td>
+          </tr>
+          <tr>
+            <td>Charging</td>
+            <td>Charge port, OBC, charge controller, relays</td>
+            <td>Pilot/proximity, charge interlock, BMS charge limits</td>
+          </tr>
+          <tr>
+            <td>Low Voltage (12V)</td>
+            <td>DC-DC, 12V battery, fusing, LV harness</td>
+            <td>Ignition, accessory bus, safety relays, indicators</td>
+          </tr>
+          <tr>
+            <td>Thermal</td>
+            <td>Pumps, radiator, fans, coolant lines, sensors</td>
+            <td>Temperature feedback, fan PWM, pump control</td>
+          </tr>
+          <tr>
+            <td>Controls / UI</td>
+            <td>Drive selector, dash indicators, data logging</td>
+            <td>CAN / UART logging, fault states, e-stop logic</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="card" id="bom">
+        <div class="sectionTitle">
+          <h2>Bill of Materials</h2>
+          <span class="badge">core parts</span>
+        </div>
+
+        <ul class="clean">
+          <li><b>Motor + inverter:</b> <span class="muted">[model], peak [kW], cooling [air/liquid]</span></li>
+          <li><b>Battery pack:</b> <span class="muted">[cell type], [series/parallel], busbars, enclosure</span></li>
+          <li><b>BMS:</b> <span class="muted">cell monitoring, current sensor, contactor control</span></li>
+          <li><b>Contactors + precharge:</b> <span class="muted">main + precharge contactor, resistor, relay</span></li>
+          <li><b>Protection:</b> <span class="muted">HV fuse, HVIL, insulation monitoring (optional)</span></li>
+          <li><b>DC-DC:</b> <span class="muted">HV→12V with sufficient current for accessories</span></li>
+          <li><b>Charging:</b> <span class="muted">Type 2 inlet, OBC, pilot/proximity circuit</span></li>
+          <li><b>Cabling:</b> <span class="muted">HV orange cable, lugs, heatshrink, shielding where needed</span></li>
+        </ul>
+
+        <p class="muted" style="margin:12px 0 0;">
+          Tip: keep a separate spreadsheet for exact part numbers, ratings, and suppliers.
+        </p>
+      </section>
+
+      <section class="card" id="progress">
+        <div class="sectionTitle">
+          <h2>Progress Log</h2>
+          <span class="badge">milestones</span>
+        </div>
+
+        <div class="progress" role="list">
+          <div class="step" role="listitem">
+            <div class="dot done" aria-hidden="true"></div>
+            <div>
+              <b>Mechanical integration</b>
+              <div class="meta">adapter plate • mounts • drivetrain alignment</div>
+              <div class="muted">[Short note: what you measured/changed, tolerances checked, lessons learned]</div>
+            </div>
+          </div>
+
+          <div class="step" role="listitem">
+            <div class="dot wip" aria-hidden="true"></div>
+            <div>
+              <b>HV pack + contactor box</b>
+              <div class="meta">precharge • fuse • HVIL routing</div>
+              <div class="muted">[Short note: insulation, enclosure, service disconnect, safety checks]</div>
+            </div>
+          </div>
+
+          <div class="step" role="listitem">
+            <div class="dot todo" aria-hidden="true"></div>
+            <div>
+              <b>Controls + first drive</b>
+              <div class="meta">throttle mapping • regen • fault handling</div>
+              <div class="muted">[Short note: test plan, what “ready-to-drive” sequence looks like]</div>
+            </div>
+          </div>
+
+          <div class="step" role="listitem">
+            <div class="dot todo" aria-hidden="true"></div>
+            <div>
+              <b>Charging + thermal validation</b>
+              <div class="meta">OBC • coolant loop • sustained load</div>
+              <div class="muted">[Short note: temperatures, fan control, derating behavior]</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="gallery" style="grid-column: 1 / -1;">
+        <div class="sectionTitle">
+          <h2>Gallery</h2>
+          <span class="badge">photos • videos</span>
+        </div>
+
+        <p class="muted" style="margin:0;">
+          Replace these placeholders with your images (e.g., /img/pack.jpg) or embed a YouTube demo.
+        </p>
+
+        <div class="gallery" aria-label="Gallery placeholders">
+          <div class="ph">
+            <div class="cap"><b>Motor + mounts</b> — show alignment and bracket design</div>
+            <code>&lt;img src="img/motor.jpg" alt="Motor installation"&gt;</code>
+          </div>
+          <div class="ph">
+            <div class="cap"><b>Battery enclosure</b> — pack layout, service disconnect, HVIL</div>
+            <code>&lt;img src="img/pack.jpg" alt="Battery pack"&gt;</code>
+          </div>
+          <div class="ph">
+            <div class="cap"><b>Wiring + contactors</b> — precharge, fusing, routing</div>
+            <code>&lt;img src="img/contactor-box.jpg" alt="Contactor box"&gt;</code>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="results">
+        <div class="sectionTitle">
+          <h2>Results & Measurements</h2>
+          <span class="badge">data</span>
+        </div>
+
+        <ul class="clean">
+          <li><b>Pack sag under load:</b> <span class="muted">[V drop] at [A] for [s]</span></li>
+          <li><b>Inverter / motor temps:</b> <span class="muted">[°C] steady-state at [kW]</span></li>
+          <li><b>Energy consumption:</b> <span class="muted">[Wh/km] mixed driving</span></li>
+          <li><b>Range estimate:</b> <span class="muted">[km] from usable [kWh]</span></li>
+          <li><b>Charging:</b> <span class="muted">[kW], [time 10–80%]</span></li>
+        </ul>
+
+        <p class="muted" style="margin:12px 0 0;">
+          Add a plot screenshot or a short table from your data logger (CAN, shunt sensor, BMS logs).
+        </p>
+      </section>
+
+      <section class="card" id="safety">
+        <div class="sectionTitle">
+          <h2>Safety & Test Plan</h2>
+          <span class="badge">process</span>
+        </div>
+
+        <ul class="clean">
+          <li><b>HV safety:</b> insulation checks, proper fusing, correct cable rating, strain relief, labeling.</li>
+          <li><b>Interlocks:</b> HVIL loop, service disconnect, e-stop behavior, “ready-to-drive” indicators.</li>
+          <li><b>Precharge validation:</b> verify capacitor charge profile and contactor timing.</li>
+          <li><b>Functional tests:</b> throttle plausibility, brake switch, direction logic, regen limits.</li>
+          <li><b>Failure modes:</b> contactor weld detection, overcurrent, overtemp, BMS fault handling.</li>
+        </ul>
+
+        <p class="muted" style="margin:12px 0 0;">
+          Make sure your implementation follows applicable electrical safety practices and any local inspection rules.
+        </p>
+      </section>
+
+      <section class="card" id="docs" style="grid-column: 1 / -1;">
+        <div class="sectionTitle">
+          <h2>Documentation</h2>
+          <span class="badge">links</span>
+        </div>
+
+        <ul class="clean">
+          <li><b>Repo:</b> <span class="muted"><a href="#" id="repoLink">[GitHub link]</a></span></li>
+          <li><b>CAD / drawings:</b> <span class="muted">[SolidWorks/STEP files]</span></li>
+          <li><b>Wiring diagrams:</b> <span class="muted">[PDF link]</span></li>
+          <li><b>Test logs:</b> <span class="muted">[CSV / plots]</span></li>
+        </ul>
+
+        <div class="row" style="margin-top:12px;">
+          <button class="btn" id="btnPrint" type="button">Print / Save as PDF</button>
+          <button class="btn" id="btnTogglePlaceholders" type="button">Toggle placeholders</button>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div>© <span id="year"></span> EV Conversion Project</div>
+      <div class="muted">Built as a single <span style="font-family:var(--mono);">index.html</span> file.</div>
+    </footer>
+  </div>
+
+  <script>
+    // --- Edit these values to match your project quickly ---
+    const PROJECT = {
+      packVoltage: "355V nominal",
+      packEnergy: "35 kWh usable",
+      motorType: "PMSM",
+      inverterType: "FOC inverter",
+      status: "In progress",
+      repoUrl: "https://github.com/yourname/ev-conversion",
+      summary: [
+        "EV Conversion Project — designed and integrated an electric drivetrain into an existing vehicle.",
+        "Defined HV architecture (pack, contactors, precharge, fusing, HVIL), integrated BMS + DC-DC + charging,",
+        "and developed a validation plan covering interlocks, precharge timing, throttle plausibility, and thermal limits."
+      ].join(" ")
+    };
+
+    // Populate hero pills
+    document.getElementById("vpack").textContent = PROJECT.packVoltage;
+    document.getElementById("epack").textContent = PROJECT.packEnergy;
+    document.getElementById("motor").textContent = PROJECT.motorType;
+    document.getElementById("inverter").textContent = PROJECT.inverterType;
+    document.getElementById("status").textContent = PROJECT.status;
+
+    // Repo link
+    const repoLink = document.getElementById("repoLink");
+    repoLink.href = PROJECT.repoUrl;
+    repoLink.textContent = PROJECT.repoUrl;
+
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Copy summary for CV/LinkedIn
+    document.getElementById("btnCopySummary").addEventListener("click", async () => {
+      try{
+        await navigator.clipboard.writeText(PROJECT.summary);
+        const btn = document.getElementById("btnCopySummary");
+        const old = btn.innerHTML;
+        btn.innerHTML = "Copied ✓ <small>(paste anywhere)</small>";
+        setTimeout(() => (btn.innerHTML = old), 1400);
+      }catch(e){
+        alert("Copy failed. Select and copy manually:\n\n" + PROJECT.summary);
+      }
+    });
+
+    // Print
+    document.getElementById("btnPrint").addEventListener("click", () => window.print());
+
+    // Toggle placeholder brackets to help you see what to replace
+    let placeholdersVisible = true;
+    document.getElementById("btnTogglePlaceholders").addEventListener("click", () => {
+      placeholdersVisible = !placeholdersVisible;
+      document.querySelectorAll(".muted").forEach(el => {
+        // Only hide placeholder-looking chunks. This is intentionally simple.
+        if (el.textContent.includes("[") && el.textContent.includes("]")) {
+          el.style.display = placeholdersVisible ? "" : "none";
+        }
+      });
+    });
+
+    // Smooth scrolling for in-page links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", (e) => {
+        const id = a.getAttribute("href");
+        if (!id || id === "#") return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        history.replaceState(null, "", id);
+      });
+    });
+  </script>
+</body>
+</html>
 
