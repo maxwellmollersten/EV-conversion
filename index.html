@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<!-- prettier-ignore -->
 <html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Delprojekt 6 – Elmotor (Hallsensorfäste)</title>
-  <meta name="description" content="Teknisk projektsida för elmotorprojekt. Fokus på hallsensorfäste (CAD + 3D-print) samt motor i drift." />
+  <title>Elmotor · Hallsensorfäste</title>
+  <meta name="description" content="Projekt med fokus på elmotor och design av hallsensorfäste." />
+
   <style>
     :root{
       --bg:#070a12;
@@ -22,7 +22,7 @@
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--text);
       background:
         radial-gradient(900px 500px at 10% 0%, rgba(122,162,255,.20), transparent 60%),
@@ -31,6 +31,7 @@
     }
     a{color:inherit}
     .wrap{max-width:var(--max); margin:0 auto; padding:26px 18px 60px}
+
     header{
       position:sticky; top:0; z-index:20;
       backdrop-filter: blur(12px);
@@ -41,145 +42,81 @@
       max-width:var(--max);
       margin:0 auto;
       padding:12px 18px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      display:flex; justify-content:space-between; align-items:center;
     }
-    .brand{
-      display:flex; align-items:center; gap:10px;
-      text-decoration:none;
-      font-weight:800;
-    }
+    .brand{display:flex; gap:10px; font-weight:800; text-decoration:none}
     .logo{
-      width:14px; height:14px; border-radius:999px;
+      width:14px; height:14px; border-radius:50%;
       background: linear-gradient(135deg, var(--a), var(--b));
-      box-shadow: 0 0 0 6px rgba(122,162,255,.10);
     }
-    nav{display:flex; gap:10px; flex-wrap:wrap}
+    nav{display:flex; gap:10px}
     .pill{
-      text-decoration:none;
-      color:var(--muted);
       padding:8px 10px;
       border-radius:999px;
-      border:1px solid transparent;
+      color:var(--muted);
+      text-decoration:none;
     }
-    .pill:hover{color:var(--text); border-color:var(--line); background:rgba(255,255,255,.04)}
+    .pill:hover{color:var(--text)}
+
     .card{
-      border-radius: var(--radius);
+      border-radius:var(--radius);
       border:1px solid var(--line);
       background: rgba(12,18,34,.72);
       box-shadow: var(--shadow);
-      overflow:hidden;
     }
     .pad{padding:22px}
-    h1{margin:0 0 10px; font-size: clamp(28px, 3.8vw, 44px); line-height:1.12}
-    h2{margin:0 0 10px; font-size:22px}
-    h3{margin:0 0 8px; font-size:14px; letter-spacing:.2px; color: rgba(234,240,255,.92)}
-    p{margin:0 0 12px; color:var(--muted); line-height:1.65}
-    ul{margin:0; padding-left:18px; color:var(--muted); line-height:1.7}
+    h1{margin:0 0 10px; font-size:36px}
+    h2{margin:0 0 10px}
+    p{color:var(--muted); line-height:1.6}
 
-    .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
     .chip{
       font-size:12px;
-      padding:7px 10px;
+      padding:6px 10px;
       border-radius:999px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: rgba(234,240,255,.92);
     }
-    .cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+
+    .cta{display:flex; gap:10px; margin-top:14px}
     .btn{
-      display:inline-flex; align-items:center; justify-content:center;
-      gap:8px;
       padding:10px 12px;
       border-radius:12px;
       border:1px solid var(--line);
       background: rgba(255,255,255,.04);
-      text-decoration:none;
       font-weight:800;
+      text-decoration:none;
     }
     .btn.primary{
-      border-color: rgba(122,162,255,.35);
-      background: linear-gradient(135deg, rgba(122,162,255,.20), rgba(110,243,197,.12));
+      background: linear-gradient(135deg, rgba(122,162,255,.25), rgba(110,243,197,.15));
     }
-    .btn:hover{transform: translateY(-1px)}
-    .btn:active{transform: translateY(0)}
 
     .grid{
       display:grid;
-      grid-template-columns: 1.15fr .85fr;
+      grid-template-columns:1.2fr .8fr;
       gap:14px;
-      align-items:start;
     }
-    @media (max-width: 860px){ .grid{grid-template-columns:1fr} }
+    @media (max-width:860px){.grid{grid-template-columns:1fr}}
 
     .subcard{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
+      border-radius:14px;
+      border:1px solid var(--line);
       background: rgba(255,255,255,.04);
-      box-shadow: 0 10px 24px rgba(0,0,0,.28);
       padding:14px;
     }
-    .subcard p{margin:0 0 10px}
-    .subcard p:last-child{margin:0}
 
-    /* Video */
-    .videoGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin-top:12px;
-    }
-    @media (max-width: 860px){ .videoGrid{grid-template-columns:1fr} }
-    .videoCard{
-      border-radius:16px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      overflow:hidden;
-    }
-    .videoCard .meta{padding:12px 14px}
-    .videoCard b{display:block; margin-bottom:4px}
-    .videoCard small{color:var(--muted); line-height:1.5}
-    .videoWrap{
-      position:relative;
-      width:100%;
-      aspect-ratio: 16/9;
-      background: rgba(0,0,0,.35);
-    }
-    .videoWrap iframe,
-    .videoWrap video{
-      position:absolute; inset:0;
-      width:100%; height:100%;
-      border:0;
-    }
-
-    /* Gallery */
     .gallery{
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
       gap:14px;
-      margin-top:14px;
     }
-    figure{margin:0}
     .gallery img{
       width:100%;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.15);
-      background:#000;
       cursor: zoom-in;
-      transition: transform .15s ease, box-shadow .15s ease;
-      display:block;
     }
-    .gallery img:hover{
-      transform: scale(1.02);
-      box-shadow: 0 12px 30px rgba(0,0,0,.45);
-    }
-    figcaption{
-      margin-top:8px;
-      color:var(--muted);
-      line-height:1.55;
-      font-size:13px;
-    }
+    figcaption{font-size:13px; color:var(--muted)}
 
-    /* Lightbox */
     .lightbox{
       position:fixed; inset:0;
       background: rgba(0,0,0,.86);
@@ -187,341 +124,149 @@
       align-items:center;
       justify-content:center;
       z-index:9999;
-      padding: 22px;
     }
     .lightbox.open{display:flex}
     .lightbox img{
-      max-width: 94vw;
-      max-height: 92vh;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow: 0 20px 70px rgba(0,0,0,.55);
-      cursor: zoom-out;
-    }
-    .lightbox .hint{
-      position:fixed;
-      top:14px; right:14px;
-      color: rgba(234,240,255,.80);
-      font-size: 12px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      padding:8px 10px;
-      border-radius: 999px;
-      backdrop-filter: blur(10px);
+      max-width:94vw;
+      max-height:92vh;
+      border-radius:16px;
     }
 
     footer{
-      margin-top:18px;
+      margin-top:20px;
       padding-top:18px;
       border-top:1px solid var(--line);
-      color:var(--muted);
       font-size:13px;
-      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
-    }
-    code{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.95em;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      padding: 2px 6px;
-      border-radius: 8px;
-      color: rgba(234,240,255,.92);
+      color:var(--muted);
+      display:flex; justify-content:space-between;
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="topbar">
-      <a class="brand" href="#top">
-        <span class="logo" aria-hidden="true"></span>
-        <span>Elmotor · Hallsensorfäste</span>
-      </a>
-      <nav aria-label="Navigering">
-        <a class="pill" href="#overview">Översikt</a>
-        <a class="pill" href="#mywork">Min del</a>
-        <a class="pill" href="#media">Video</a>
-        <a class="pill" href="#gallery">Bilder</a>
-        <a class="pill" href="#linkedin">LinkedIn</a>
-      </nav>
-    </div>
-  </header>
-
-  <main id="top" class="wrap">
-    <!-- OVERVIEW -->
-    <section class="card pad" id="overview">
-      <h1>Elmotorprojekt</h1>
-      <p>
-        Teknisk projektsida med fokus på <b>elmotor</b> och min uppgift: <b>design och montering av hallsensorfäste</b>
-        för rotorposition/varvtal.
-      </p>
-
-      <div class="chips">
-        <span class="chip">BLDC</span>
-        <span class="chip">Hallsensorer</span>
-        <span class="chip">SolidWorks</span>
-        <span class="chip">3D-print (PLA)</span>
-        <span class="chip">Systemintegration</span>
-      </div>
-
-      <div class="cta">
-        <a class="btn primary" href="#mywork">Hallsensorfäste</a>
-        <a class="btn" href="#media">Video</a>
-        <a class="btn" href="#linkedin">LinkedIn</a>
-      </div>
-    </section>
-
-    <!-- YOUR CONTRIBUTION -->
-    <section class="card pad" id="mywork" style="margin-top:14px">
-      <h2>Min del: Hallsensorfäste</h2>
-      <p>
-        Målet var att placera hallsensorerna korrekt i statorn, med stabil mekanisk infästning och rätt avstånd till rotorns magneter,
-        så att rotorposition kan användas för kommutering.
-      </p>
-
-      <div class="grid">
-        <div class="subcard">
-          <h3>Krav</h3>
-          <ul>
-            <li>Passform i statorn med friktionsinfästning.</li>
-            <li>Tunnel/kanal för sensor och kabel.</li>
-            <li>Rätt höjd/djup för stabil signal.</li>
-            <li>Tåla vibrationer och montage/demontage.</li>
-          </ul>
-        </div>
-
-        <aside class="subcard">
-          <h3>Iteration</h3>
-          <p>
-            Första lösningen gav fel sensorhöjd. Designen uppdaterades så att fästet gick
-            <b>under lindningarna</b> och in i gapet för bättre magnetdetektion.
-          </p>
-          <p>
-            Slutdesignen anpassades i praktiken med lätt filning för tight passning.
-          </p>
-        </aside>
-      </div>
-    </section>
-
-    <!-- VIDEOS -->
-    <section class="card pad" id="media" style="margin-top:14px">
-      <h2>Video</h2>
-      <div class="videoGrid" id="videoGrid"></div>
-    </section>
-
-    <!-- IMAGES -->
-    <section class="card pad" id="gallery" style="margin-top:14px">
-      <h2>Bilder</h2>
-      <div class="gallery" id="galleryGrid"></div>
-    </section>
-
-    <!-- LINKEDIN -->
-    <section class="card pad" id="linkedin" style="margin-top:14px">
-      <h2>LinkedIn</h2>
-
-      <div class="cta">
-        <a
-          class="btn primary"
-          href="https://www.linkedin.com/feed/update/urn:li:activity:7311366460423995393/"
-          target="_blank"
-          rel="noreferrer"
-        >Öppna inlägg</a>
-      </div>
-
-      <div class="gallery" style="margin-top:12px">
-        <figure>
-          <img
-            src="media/uu_linkedin_post.png"
-            alt="Screenshot av LinkedIn-inlägg från Uppsala universitet"
-            data-full="media/uu_linkedin_post.png"
-          />
-          <figcaption>Uppsala universitets inlägg (screenshot).</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <footer>
-      <div>© <span id="year"></span> Elmotor</div>
-      <div>GitHub Pages · <code>index.html</code></div>
-    </footer>
-  </main>
-
-  <!-- Lightbox overlay -->
-  <div class="lightbox" id="lightbox" aria-hidden="true">
-    <div class="hint">Klicka eller tryck ESC för att stänga</div>
-    <img id="lightboxImg" alt="">
+<header>
+  <div class="topbar">
+    <a class="brand" href="#top">
+      <span class="logo"></span>
+      <span>Elmotor · Hallsensorfäste</span>
+    </a>
+    <nav>
+      <a class="pill" href="#overview">Översikt</a>
+      <a class="pill" href="#mywork">Min del</a>
+      <a class="pill" href="#gallery">Bilder</a>
+      <a class="pill" href="#linkedin">LinkedIn</a>
+    </nav>
   </div>
+</header>
 
-  <script>
-    // ==========================
-    // VIDEO: uppdatera listan nedan
-    // ==========================
-    const videos = [
-      {
-        type: "mp4",
-        title: "Pre-test – motor i rigg",
-        note: "Test före inmontering.",
-        src: "media/pre_test.mp4"
-      },
-      {
-        type: "mp4",
-        title: "Körning – bilen i drift",
-        note: "Video när bilen kör med motorn integrerad.",
-        src: "media/drive.mp4"
-      }
-    ];
+<main id="top" class="wrap">
 
-    // ==========================
-    // BILDER: uppdatera listan nedan
-    // ==========================
-    const photos = [
-      {
-        src: "media/hallsensorfaste_cad.png",
-        full: "media/hallsensorfaste_cad.png",
-        alt: "CAD-modell av hallsensorfäste",
-        caption: "CAD-modell av hallsensorfäste."
-      },
-      {
-        src: "media/motor.png",
-        full: "media/motor.png",
-        alt: "Bild på motorn",
-        caption: "Motorn i projektet."
-      }
-    ];
+  <!-- OVERVIEW -->
+  <section class="card pad" id="overview">
+    <h1>Elmotorprojekt</h1>
+    <p>
+      Projekt med fokus på elmotorintegration och min uppgift:
+      <b>design och montering av hallsensorfäste</b> för rotorposition och varvtal.
+    </p>
+    <div class="chips">
+      <span class="chip">BLDC</span>
+      <span class="chip">Hallsensorer</span>
+      <span class="chip">SolidWorks</span>
+      <span class="chip">3D-print</span>
+    </div>
+  </section>
 
-    const videoGrid = document.getElementById("videoGrid");
-    const galleryGrid = document.getElementById("galleryGrid");
+  <!-- MY WORK -->
+  <section class="card pad" id="mywork" style="margin-top:14px">
+    <h2>Min del: Hallsensorfäste</h2>
+    <div class="grid">
+      <div class="subcard">
+        <ul>
+          <li>Mekanisk infästning i statorn</li>
+          <li>Korrekt avstånd till rotor­magneter</li>
+          <li>Kabeldragning och vibrations­tålighet</li>
+        </ul>
+      </div>
+      <div class="subcard">
+        <p>
+          Designen itererades efter test för att förbättra signalstyrka och passform.
+          Slutversionen gav stabil detektion under drift.
+        </p>
+      </div>
+    </div>
+  </section>
 
-    function esc(s){
-      return (s || "").replace(/[&<>"']/g, m => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[m]));
+  <!-- GALLERY -->
+  <section class="card pad" id="gallery" style="margin-top:14px">
+    <h2>Bilder</h2>
+    <div class="gallery" id="galleryGrid"></div>
+  </section>
+
+  <!-- LINKEDIN -->
+  <section class="card pad" id="linkedin" style="margin-top:14px">
+    <h2>LinkedIn</h2>
+    <div class="cta">
+      <a class="btn primary"
+         href="https://www.linkedin.com/feed/update/urn:li:activity:7311366460423995393/"
+         target="_blank" rel="noreferrer">
+        Öppna LinkedIn-inlägg
+      </a>
+    </div>
+
+    <div class="gallery" style="margin-top:12px">
+      <figure>
+        <img src="media/uu-linkedin.png"
+             data-full="media/uu-linkedin.png"
+             alt="LinkedIn-inlägg från Uppsala universitet">
+        <figcaption>Uppsala universitet lyfter projektet.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <footer>
+    <div>© <span id="year"></span> Elmotor</div>
+    <div>GitHub Pages</div>
+  </footer>
+</main>
+
+<div class="lightbox" id="lightbox">
+  <img id="lightboxImg" alt="">
+</div>
+
+<script>
+  const photos = [
+    {
+      src: "media/hall_bracket_cad.jpg",
+      full: "media/hall_bracket_cad.jpg",
+      caption: "CAD-modell av hallsensorfäste."
+    },
+    {
+      src: "media/motor.jpg",
+      full: "media/motor.jpg",
+      caption: "Motorn i projektet."
     }
+  ];
 
-    function renderVideos(){
-      if(!videos.length){
-        videoGrid.innerHTML = `
-          <div class="videoCard">
-            <div class="meta">
-              <b>Inga videos ännu</b>
-              <small>Lägg till videos i <code>videos</code>-listan.</small>
-            </div>
-          </div>
-        `;
-        return;
-      }
+  const galleryGrid = document.getElementById("galleryGrid");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
 
-      videoGrid.innerHTML = videos.map(v => {
-        const title = esc(v.title || "Video");
-        const note  = esc(v.note || "");
-        let media = "";
+  galleryGrid.innerHTML = photos.map(p => `
+    <figure>
+      <img src="${p.src}" data-full="${p.full}" alt="">
+      <figcaption>${p.caption}</figcaption>
+    </figure>
+  `).join("");
 
-        if(v.type === "youtube"){
-          const id = esc(v.id || "");
-          media = `
-            <div class="videoWrap">
-              <iframe
-                src="https://www.youtube.com/embed/${id}"
-                title="${title}"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-              </iframe>
-            </div>
-          `;
-        } else if(v.type === "mp4"){
-          const src = esc(v.src || "");
-          media = `
-            <div class="videoWrap">
-              <video controls preload="metadata">
-                <source src="${src}" type="video/mp4">
-                Din webbläsare stödjer inte video-taggen.
-              </video>
-            </div>
-          `;
-        }
-
-        return `
-          <article class="videoCard">
-            ${media}
-            <div class="meta">
-              <b>${title}</b>
-              <small>${note}</small>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderGallery(){
-      if(!photos.length){
-        galleryGrid.innerHTML = `
-          <div class="subcard">
-            <h3>Inga bilder ännu</h3>
-            <p>Lägg till bilder i <code>photos</code>-listan.</p>
-          </div>
-        `;
-        return;
-      }
-
-      galleryGrid.innerHTML = photos.map(p => {
-        const src = esc(p.src || "");
-        const full = esc(p.full || p.src || "");
-        const alt = esc(p.alt || "");
-        const cap = esc(p.caption || "");
-        return `
-          <figure>
-            <img src="${src}" alt="${alt}" data-full="${full}">
-            <figcaption>${cap}</figcaption>
-          </figure>
-        `;
-      }).join("");
-
-      document.querySelectorAll("#galleryGrid img").forEach(img => {
-        img.addEventListener("click", () => {
-          const full = img.getAttribute("data-full") || img.src;
-          openLightbox(full, img.alt);
-        });
-      });
-
-      // LinkedIn screenshot (samma lightbox-beteende)
-      document.querySelectorAll('#linkedin img[data-full]').forEach(img => {
-        img.addEventListener("click", () => {
-          const full = img.getAttribute("data-full") || img.src;
-          openLightbox(full, img.alt);
-        });
-      });
-    }
-
-    // ==========================
-    // LIGHTBOX
-    // ==========================
-    const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightboxImg");
-
-    function openLightbox(src, alt){
-      lightboxImg.src = src;
-      lightboxImg.alt = alt || "";
+  document.querySelectorAll("img[data-full]").forEach(img=>{
+    img.onclick = () => {
+      lightboxImg.src = img.dataset.full;
       lightbox.classList.add("open");
-      lightbox.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-    }
+    };
+  });
 
-    function closeLightbox(){
-      lightbox.classList.remove("open");
-      lightbox.setAttribute("aria-hidden", "true");
-      lightboxImg.src = "";
-      document.body.style.overflow = "";
-    }
-
-    lightbox.addEventListener("click", closeLightbox);
-    document.addEventListener("keydown", (e) => {
-      if(e.key === "Escape") closeLightbox();
-    });
-
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    renderVideos();
-    renderGallery();
-  </script>
+  lightbox.onclick = () => lightbox.classList.remove("open");
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
