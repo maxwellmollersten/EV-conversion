@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Delprojekt 6 – Elmotor (Hallsensorfäste)</title>
-  <meta name="description" content="Teknisk projektsida för Delprojekt 6: Elmotor. Fokus på hallsensorfäste (CAD + 3D-print) samt motor i drift." />
+  <meta name="description" content="Teknisk projektsida för elmotorprojekt. Fokus på hallsensorfäste (CAD + 3D-print) samt motor i drift." />
   <style>
     :root{
       --bg:#070a12;
@@ -179,33 +179,6 @@
       font-size:13px;
     }
 
-    /* LinkedIn */
-    .embed{
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.03);
-      overflow:hidden;
-      margin-top:12px;
-    }
-    .embedHeader{
-      padding:12px 14px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      border-bottom:1px solid rgba(255,255,255,.10);
-    }
-    .embedHeader b{display:block}
-    .embedHeader small{color:var(--muted)}
-    .embedBody{padding:14px}
-    .embed iframe{
-      width:100%;
-      border:0;
-      border-radius:14px;
-      background: rgba(0,0,0,.25);
-      min-height: 520px; /* justera vid behov */
-    }
-
     /* Lightbox */
     .lightbox{
       position:fixed; inset:0;
@@ -255,9 +228,6 @@
       color: rgba(234,240,255,.92);
     }
   </style>
-
-  <!-- LinkedIn embed script (krävs för blockquote-inbäddning) -->
-  <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: sv_SE</script>
 </head>
 
 <body>
@@ -280,10 +250,10 @@
   <main id="top" class="wrap">
     <!-- OVERVIEW -->
     <section class="card pad" id="overview">
-      <h1>Delprojekt 6: Elmotor (1TE668)</h1>
+      <h1>Elmotorprojekt</h1>
       <p>
-        Teknisk projektsida för motorgruppen i elbilsprojektet (HT2024–VT2025). Den här sidan fokuserar på
-        <b>elmotor-delen</b> och min uppgift: <b>design och montering av hallsensorfäste</b> för rotorposition/varvtal.
+        Teknisk projektsida med fokus på <b>elmotor</b> och min uppgift: <b>design och montering av hallsensorfäste</b>
+        för rotorposition/varvtal.
       </p>
 
       <div class="chips">
@@ -295,9 +265,7 @@
       </div>
 
       <div class="cta">
-        <!-- ÄNDRA: repo / rapport -->
-        <a class="btn primary" href="#" target="_blank" rel="noreferrer">Rapport (PDF)</a>
-        <a class="btn" href="#mywork">Hallsensorfäste</a>
+        <a class="btn primary" href="#mywork">Hallsensorfäste</a>
         <a class="btn" href="#media">Video</a>
         <a class="btn" href="#linkedin">LinkedIn</a>
       </div>
@@ -315,17 +283,17 @@
         <div class="subcard">
           <h3>Krav</h3>
           <ul>
-            <li>Passform i statorn med friktionsinfästning (minimera behov av lim).</li>
+            <li>Passform i statorn med friktionsinfästning.</li>
             <li>Tunnel/kanal för sensor och kabel.</li>
-            <li>Rätt höjd/djup: tillräckligt nära magnetfältet för stabil signal.</li>
-            <li>Hålla för vibrationer och montage/demontage vid FAT.</li>
+            <li>Rätt höjd/djup för stabil signal.</li>
+            <li>Tåla vibrationer och montage/demontage.</li>
           </ul>
         </div>
 
         <aside class="subcard">
           <h3>Iteration</h3>
           <p>
-            Första lösningen gav fel sensorhöjd under FAT 1. Jag gjorde om designen så att fästet gick
+            Första lösningen gav fel sensorhöjd. Designen uppdaterades så att fästet gick
             <b>under lindningarna</b> och in i gapet för bättre magnetdetektion.
           </p>
           <p>
@@ -338,57 +306,42 @@
     <!-- VIDEOS -->
     <section class="card pad" id="media" style="margin-top:14px">
       <h2>Video</h2>
-      <p>Två videos: en pre-test och en när bilen kör. Byt länkar/filnamn i listan <code>videos</code> i koden.</p>
       <div class="videoGrid" id="videoGrid"></div>
     </section>
 
     <!-- IMAGES -->
     <section class="card pad" id="gallery" style="margin-top:14px">
       <h2>Bilder</h2>
-      <p>
-        Två bilder: CAD-modell av hallsensorfäste och en bild på motorn. Klicka för att zooma.
-        Byt filnamn i listan <code>photos</code>.
-      </p>
       <div class="gallery" id="galleryGrid"></div>
     </section>
 
     <!-- LINKEDIN -->
     <section class="card pad" id="linkedin" style="margin-top:14px">
       <h2>LinkedIn</h2>
-      <p>
-        Inlägg där Uppsala universitet lyfter projektet. Om inbäddningen inte syns (t.ex. pga cookies/inloggning),
-        använd knappen för att öppna inlägget direkt.
-      </p>
 
       <div class="cta">
-        <a class="btn primary" href="https://www.linkedin.com/feed/update/urn:li:activity:7311366460423995393/" target="_blank" rel="noreferrer">Öppna inlägg</a>
+        <a
+          class="btn primary"
+          href="https://www.linkedin.com/feed/update/urn:li:activity:7311366460423995393/"
+          target="_blank"
+          rel="noreferrer"
+        >Öppna inlägg</a>
       </div>
 
-      <div class="embed">
-        <div class="embedHeader">
-          <div>
-            <b>Inbäddat inlägg</b>
-            <small>LinkedIn kan kräva cookies / inloggning.</small>
-          </div>
-        </div>
-        <div class="embedBody">
-          <!-- LinkedIn official embed (fungerar om LinkedIn tillåter inbäddning för inlägget) -->
-          <blockquote class="linkedin-post" data-id="urn:li:activity:7311366460423995393"></blockquote>
-
-          <!-- Alternativ: om du hellre vill använda iframe (funkar inte alltid pga X-Frame-Options):
-          <iframe
-            title="LinkedIn post"
-            src="https://www.linkedin.com/embed/feed/update/urn:li:activity:7311366460423995393"
-            loading="lazy"
-            allowfullscreen>
-          </iframe>
-          -->
-        </div>
+      <div class="gallery" style="margin-top:12px">
+        <figure>
+          <img
+            src="media/uu_linkedin_post.png"
+            alt="Screenshot av LinkedIn-inlägg från Uppsala universitet"
+            data-full="media/uu_linkedin_post.png"
+          />
+          <figcaption>Uppsala universitets inlägg (screenshot).</figcaption>
+        </figure>
       </div>
     </section>
 
     <footer>
-      <div>© <span id="year"></span> Delprojekt 6 – Elmotor</div>
+      <div>© <span id="year"></span> Elmotor</div>
       <div>GitHub Pages · <code>index.html</code></div>
     </footer>
   </main>
@@ -401,53 +354,38 @@
 
   <script>
     // ==========================
-    // VIDEO: Lägg in dina videos här
-    // Om du har MP4-filer i repo: lägg dem i /media/
-    // Om du har YouTube: ange "id"
+    // VIDEO: uppdatera listan nedan
     // ==========================
     const videos = [
-      // 1) Pre-test video
       {
         type: "mp4",
         title: "Pre-test – motor i rigg",
-        note: "Test före inmontering (byt till din fil).",
+        note: "Test före inmontering.",
         src: "media/pre_test.mp4"
       },
-      // 2) Video när bilen kör
       {
         type: "mp4",
         title: "Körning – bilen i drift",
-        note: "Video när bilen kör med motorn integrerad (byt till din fil).",
+        note: "Video när bilen kör med motorn integrerad.",
         src: "media/drive.mp4"
       }
-
-      /*
-      // Exempel YouTube:
-      {
-        type: "youtube",
-        title: "Körning – bilen i drift",
-        note: "YouTube-version",
-        id: "YRpkC8XQxtg"
-      }
-      */
     ];
 
     // ==========================
-    // GALLERY: Lägg in dina bilder här
-    // Lägg bilder i /media/ och byt filnamn nedan
+    // BILDER: uppdatera listan nedan
     // ==========================
     const photos = [
       {
-        src: "media/hall_bracket_cad.jpg",
-        full: "media/hall_bracket_cad.jpg",
+        src: "media/hallsensorfaste_cad.png",
+        full: "media/hallsensorfaste_cad.png",
         alt: "CAD-modell av hallsensorfäste",
-        caption: "CAD-modell av hallsensorfäste i SolidWorks (slutdesign)."
+        caption: "CAD-modell av hallsensorfäste."
       },
       {
-        src: "media/motor.jpg",
-        full: "media/motor.jpg",
-        alt: "Bild på BLDC-motorn",
-        caption: "Motor: stator/rotor-uppbyggnad och montage i projektet."
+        src: "media/motor.png",
+        full: "media/motor.png",
+        alt: "Bild på motorn",
+        caption: "Motorn i projektet."
       }
     ];
 
@@ -465,8 +403,8 @@
         videoGrid.innerHTML = `
           <div class="videoCard">
             <div class="meta">
-              <b>Inga videos inlagda än</b>
-              <small>Lägg till objekt i listan <code>videos</code> i koden.</small>
+              <b>Inga videos ännu</b>
+              <small>Lägg till videos i <code>videos</code>-listan.</small>
             </div>
           </div>
         `;
@@ -518,8 +456,8 @@
       if(!photos.length){
         galleryGrid.innerHTML = `
           <div class="subcard">
-            <h3>Inga bilder inlagda än</h3>
-            <p>Lägg till objekt i listan <code>photos</code>. Lägg dina bilder i <code>media/</code>.</p>
+            <h3>Inga bilder ännu</h3>
+            <p>Lägg till bilder i <code>photos</code>-listan.</p>
           </div>
         `;
         return;
@@ -539,6 +477,14 @@
       }).join("");
 
       document.querySelectorAll("#galleryGrid img").forEach(img => {
+        img.addEventListener("click", () => {
+          const full = img.getAttribute("data-full") || img.src;
+          openLightbox(full, img.alt);
+        });
+      });
+
+      // LinkedIn screenshot (samma lightbox-beteende)
+      document.querySelectorAll('#linkedin img[data-full]').forEach(img => {
         img.addEventListener("click", () => {
           const full = img.getAttribute("data-full") || img.src;
           openLightbox(full, img.alt);
