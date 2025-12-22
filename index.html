@@ -179,6 +179,33 @@
       font-size:13px;
     }
 
+    /* LinkedIn */
+    .embed{
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .embedHeader{
+      padding:12px 14px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .embedHeader b{display:block}
+    .embedHeader small{color:var(--muted)}
+    .embedBody{padding:14px}
+    .embed iframe{
+      width:100%;
+      border:0;
+      border-radius:14px;
+      background: rgba(0,0,0,.25);
+      min-height: 520px; /* justera vid behov */
+    }
+
     /* Lightbox */
     .lightbox{
       position:fixed; inset:0;
@@ -228,6 +255,9 @@
       color: rgba(234,240,255,.92);
     }
   </style>
+
+  <!-- LinkedIn embed script (krävs för blockquote-inbäddning) -->
+  <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: sv_SE</script>
 </head>
 
 <body>
@@ -242,6 +272,7 @@
         <a class="pill" href="#mywork">Min del</a>
         <a class="pill" href="#media">Video</a>
         <a class="pill" href="#gallery">Bilder</a>
+        <a class="pill" href="#linkedin">LinkedIn</a>
       </nav>
     </div>
   </header>
@@ -268,6 +299,7 @@
         <a class="btn primary" href="#" target="_blank" rel="noreferrer">Rapport (PDF)</a>
         <a class="btn" href="#mywork">Hallsensorfäste</a>
         <a class="btn" href="#media">Video</a>
+        <a class="btn" href="#linkedin">LinkedIn</a>
       </div>
     </section>
 
@@ -320,6 +352,41 @@
       <div class="gallery" id="galleryGrid"></div>
     </section>
 
+    <!-- LINKEDIN -->
+    <section class="card pad" id="linkedin" style="margin-top:14px">
+      <h2>LinkedIn</h2>
+      <p>
+        Inlägg där Uppsala universitet lyfter projektet. Om inbäddningen inte syns (t.ex. pga cookies/inloggning),
+        använd knappen för att öppna inlägget direkt.
+      </p>
+
+      <div class="cta">
+        <a class="btn primary" href="https://www.linkedin.com/feed/update/urn:li:activity:7311366460423995393/" target="_blank" rel="noreferrer">Öppna inlägg</a>
+      </div>
+
+      <div class="embed">
+        <div class="embedHeader">
+          <div>
+            <b>Inbäddat inlägg</b>
+            <small>LinkedIn kan kräva cookies / inloggning.</small>
+          </div>
+        </div>
+        <div class="embedBody">
+          <!-- LinkedIn official embed (fungerar om LinkedIn tillåter inbäddning för inlägget) -->
+          <blockquote class="linkedin-post" data-id="urn:li:activity:7311366460423995393"></blockquote>
+
+          <!-- Alternativ: om du hellre vill använda iframe (funkar inte alltid pga X-Frame-Options):
+          <iframe
+            title="LinkedIn post"
+            src="https://www.linkedin.com/embed/feed/update/urn:li:activity:7311366460423995393"
+            loading="lazy"
+            allowfullscreen>
+          </iframe>
+          -->
+        </div>
+      </div>
+    </section>
+
     <footer>
       <div>© <span id="year"></span> Delprojekt 6 – Elmotor</div>
       <div>GitHub Pages · <code>index.html</code></div>
@@ -354,8 +421,8 @@
         src: "media/drive.mp4"
       }
 
-      // Exempel om du vill använda YouTube istället:
       /*
+      // Exempel YouTube:
       {
         type: "youtube",
         title: "Körning – bilen i drift",
