@@ -44,12 +44,12 @@
       padding:12px 18px;
       display:flex; justify-content:space-between; align-items:center;
     }
-    .brand{display:flex; gap:10px; font-weight:800; text-decoration:none}
+    .brand{display:flex; gap:10px; font-weight:800; text-decoration:none; align-items:center}
     .logo{
       width:14px; height:14px; border-radius:50%;
       background: linear-gradient(135deg, var(--a), var(--b));
     }
-    nav{display:flex; gap:10px}
+    nav{display:flex; gap:10px; flex-wrap:wrap}
     .pill{
       padding:8px 10px;
       border-radius:999px;
@@ -77,7 +77,7 @@
       border:1px solid var(--line);
     }
 
-    .cta{display:flex; gap:10px; margin-top:14px}
+    .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
     .btn{
       padding:10px 12px;
       border-radius:12px;
@@ -85,6 +85,9 @@
       background: rgba(255,255,255,.04);
       font-weight:800;
       text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
     }
     .btn.primary{
       background: linear-gradient(135deg, rgba(122,162,255,.25), rgba(110,243,197,.15));
@@ -104,6 +107,7 @@
       padding:14px;
     }
 
+    /* Gallery */
     .gallery{
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
@@ -114,9 +118,11 @@
       border-radius:14px;
       border:1px solid rgba(255,255,255,.15);
       cursor: zoom-in;
+      display:block;
     }
-    figcaption{font-size:13px; color:var(--muted)}
+    figcaption{font-size:13px; color:var(--muted); margin-top:8px; line-height:1.45}
 
+    /* Lightbox */
     .lightbox{
       position:fixed; inset:0;
       background: rgba(0,0,0,.86);
@@ -124,12 +130,80 @@
       align-items:center;
       justify-content:center;
       z-index:9999;
+      padding: 22px;
     }
     .lightbox.open{display:flex}
     .lightbox img{
       max-width:94vw;
       max-height:92vh;
       border-radius:16px;
+      cursor: zoom-out;
+    }
+
+    /* Video (Shorts) */
+    .videoGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top:12px;
+    }
+    @media (max-width:860px){ .videoGrid{grid-template-columns:1fr} }
+
+    .videoCard{
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      overflow:hidden;
+    }
+    .videoWrap{
+      width:100%;
+      aspect-ratio: 9/16;
+      background: rgba(0,0,0,.25);
+    }
+    .videoWrap iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+    .videoMeta{
+      padding:12px 14px;
+      color:var(--muted);
+      line-height:1.45;
+      font-size:13px;
+    }
+    .videoMeta b{
+      display:block;
+      color:var(--text);
+      margin-bottom:6px;
+      font-size:14px;
+    }
+
+    /* LinkedIn thumbnail smaller + hint */
+    .thumbWrap{
+      max-width: 340px;
+      margin: 12px auto 0;
+      position: relative;
+    }
+    .thumbWrap img{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.15);
+      cursor: zoom-in;
+      display:block;
+    }
+    .zoomHint{
+      position:absolute;
+      left:10px;
+      bottom:10px;
+      font-size:12px;
+      color: rgba(234,240,255,.92);
+      background: rgba(0,0,0,.45);
+      border:1px solid rgba(255,255,255,.16);
+      padding:8px 10px;
+      border-radius:999px;
+      backdrop-filter: blur(10px);
+      pointer-events:none;
     }
 
     footer{
@@ -139,6 +213,7 @@
       font-size:13px;
       color:var(--muted);
       display:flex; justify-content:space-between;
+      gap:10px; flex-wrap:wrap;
     }
   </style>
 </head>
@@ -153,6 +228,7 @@
     <nav>
       <a class="pill" href="#overview">Översikt</a>
       <a class="pill" href="#mywork">Min del</a>
+      <a class="pill" href="#videos">Video</a>
       <a class="pill" href="#gallery">Bilder</a>
       <a class="pill" href="#linkedin">LinkedIn</a>
     </nav>
@@ -196,6 +272,42 @@
     </div>
   </section>
 
+  <!-- VIDEOS -->
+  <section class="card pad" id="videos" style="margin-top:14px">
+    <h2>Video</h2>
+    <div class="videoGrid">
+      <article class="videoCard">
+        <div class="videoWrap">
+          <iframe
+            src="https://www.youtube.com/embed/2D2PQL_NvOk"
+            title="Pre-test – motor i rigg"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="videoMeta">
+          <b>Pre-test – motor i rigg</b>
+          Första test innan inmontering.
+        </div>
+      </article>
+
+      <article class="videoCard">
+        <div class="videoWrap">
+          <iframe
+            src="https://www.youtube.com/embed/SbzqgAn4Eh4"
+            title="Körning – bilen i drift"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="videoMeta">
+          <b>Körning – bilen i drift</b>
+          Bilen i drift med färdig motorintegration.
+        </div>
+      </article>
+    </div>
+  </section>
+
   <!-- GALLERY -->
   <section class="card pad" id="gallery" style="margin-top:14px">
     <h2>Bilder</h2>
@@ -213,14 +325,18 @@
       </a>
     </div>
 
-    <div class="gallery" style="margin-top:12px">
-      <figure>
-        <img src="media/uu-linkedin.png"
-             data-full="media/uu-linkedin.png"
-             alt="LinkedIn-inlägg från Uppsala universitet">
-        <figcaption>Uppsala universitet lyfter projektet.</figcaption>
-      </figure>
+    <div class="thumbWrap">
+      <img
+        src="media/uu-linkedin.png"
+        data-full="media/uu-linkedin.png"
+        alt="LinkedIn-inlägg från Uppsala universitet"
+      />
+      <div class="zoomHint">Klicka för att förstora</div>
     </div>
+
+    <figcaption style="text-align:center; margin-top:10px;">
+      Uppsala universitet lyfter projektet.
+    </figcaption>
   </section>
 
   <footer>
@@ -258,14 +374,26 @@
     </figure>
   `).join("");
 
+  function openLightbox(src){
+    lightboxImg.src = src;
+    lightbox.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function closeLightbox(){
+    lightbox.classList.remove("open");
+    lightboxImg.src = "";
+    document.body.style.overflow = "";
+  }
+
   document.querySelectorAll("img[data-full]").forEach(img=>{
-    img.onclick = () => {
-      lightboxImg.src = img.dataset.full;
-      lightbox.classList.add("open");
-    };
+    img.onclick = () => openLightbox(img.dataset.full || img.src);
   });
 
-  lightbox.onclick = () => lightbox.classList.remove("open");
+  lightbox.onclick = closeLightbox;
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") closeLightbox();
+  });
+
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 </body>
