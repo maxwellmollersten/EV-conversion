@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Elmotor · Hallsensorfäste</title>
-  <meta name="description" content="Projekt med fokus på elmotor och design av hallsensorfäste." />
+  <title>Electric Motor · Hall Sensor Mount</title>
+  <meta name="description" content="Project focused on electric motor integration and the design of a hall sensor mount." />
 
   <style>
     :root{
@@ -19,7 +19,7 @@
       --a:#7aa2ff;
       --b:#6ef3c5;
 
-      /* Samma gradient som bakgrunden (använd överallt) */
+      /* Same gradient as background (use everywhere) */
       --bg-gradient:
         radial-gradient(900px 500px at 10% 0%, rgba(122,162,255,.20), transparent 60%),
         radial-gradient(900px 600px at 90% 5%, rgba(110,243,197,.16), transparent 60%),
@@ -85,7 +85,7 @@
       background:rgba(255,255,255,.04);
     }
 
-    /* "Alla projekt" som pill-knapp (som din screenshot) */
+    /* "All projects" pill button */
     .pill.back{
       padding:10px 16px;
       border-radius:999px;
@@ -213,26 +213,26 @@
     .videoCard{
       border-radius:14px;
       border:1px solid var(--line);
-      background: var(--bg-gradient); /* samma gradient som bakgrund */
+      background: var(--bg-gradient);
       overflow:hidden;
     }
 
-    /* 75% kortare utan gap + behåll “Shorts-känsla” via beskärning */
+    /* 75% shorter without gaps + keep “Shorts feel” via crop */
     .videoWrap{
       position: relative;
       width: 100%;
-      aspect-ratio: 3 / 4;          /* kortare kort */
-      overflow: hidden;            /* klipp bort */
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
       background: rgba(0,0,0,.25);
     }
     .videoWrap iframe{
       position: absolute;
       inset: 0;
       width: 100%;
-      height: 133.333%;            /* 1/0.75 för att fylla */
+      height: 133.333%;
       border: 0;
       display: block;
-      transform: translateY(-12.5%); /* centrerad beskärning */
+      transform: translateY(-12.5%);
     }
 
     .videoMeta{
@@ -295,14 +295,14 @@
   <div class="topbar">
     <a class="brand" href="#top">
       <span class="logo" aria-hidden="true"></span>
-      <span>Elmotor · Hallsensorfäste</span>
+      <span>Electric Motor · Hall Sensor Mount</span>
     </a>
-    <nav aria-label="Navigering">
-      <a class="pill back" href="https://maxwellmollersten.github.io/projects/">← Alla projekt</a>
-      <a class="pill" href="#overview">Översikt</a>
-      <a class="pill" href="#mywork">Min del</a>
+    <nav aria-label="Navigation">
+      <a class="pill back" href="https://maxwellmollersten.github.io/projects/">← All projects</a>
+      <a class="pill" href="#overview">Overview</a>
+      <a class="pill" href="#mywork">My contribution</a>
       <a class="pill" href="#videos">Video</a>
-      <a class="pill" href="#gallery">Bilder</a>
+      <a class="pill" href="#gallery">Images</a>
       <a class="pill" href="#linkedin">LinkedIn</a>
     </nav>
   </div>
@@ -312,40 +312,40 @@
 
   <!-- OVERVIEW -->
   <section class="card pad" id="overview">
-    <h1>Elmotorprojekt</h1>
+    <h1>Electric Motor Project</h1>
     <p>
-      Projekt med fokus på elmotorintegration och min uppgift:
-      <b>design och montering av hallsensorfäste</b> för rotorposition och varvtal.
-      Projektet genomfördes inom en kurs där cirka 30 studenter hade målet att konvertera en Volvo XC40
-      från förbränningsmotor (ICE) till eldrift med en egenbyggd drivlina.
-      Arbetet var uppdelat i flera delgrupper med tydliga ansvarsområden,
-      och mitt bidrag låg i motorgruppen med fokus på att ta fram en mekaniskt stabil lösning som gav tillförlitlig hallsensorsignal
-      under test och drift.
+      Project focused on electric motor integration and my task:
+      <b>design and mounting of a hall sensor bracket</b> for rotor position and RPM measurement.
+      The work was done as part of a course where ~30 students aimed to convert a Volvo XC40
+      from an internal combustion engine (ICE) drivetrain to electric drive using a student-built powertrain.
+      The project was split into multiple subteams with clear responsibilities,
+      and my contribution was in the motor team—delivering a mechanically stable solution that provided a reliable hall sensor signal
+      during testing and operation.
     </p>
 
     <div class="chips">
       <span class="chip">BLDC</span>
-      <span class="chip">Hallsensorer</span>
+      <span class="chip">Hall Sensors</span>
       <span class="chip">SolidWorks</span>
-      <span class="chip">3D-print</span>
+      <span class="chip">3D Printing</span>
     </div>
   </section>
 
   <!-- MY WORK -->
   <section class="card pad" id="mywork" style="margin-top:14px">
-    <h2>Min del: Hallsensorfäste</h2>
+    <h2>My contribution: Hall sensor mount</h2>
     <div class="grid">
       <div class="subcard">
-        <ul>
-          <li>Mekanisk infästning i statorn</li>
-          <li>Korrekt avstånd till rotor­magneter</li>
-          <li>Kabeldragning och vibrations­tålighet</li>
+        <ul style="margin:0; padding-left:18px; color:var(--muted); line-height:1.7;">
+          <li>Mechanical mounting to the stator</li>
+          <li>Correct spacing to the rotor magnets</li>
+          <li>Cable routing and vibration robustness</li>
         </ul>
       </div>
       <div class="subcard">
         <p>
-          Designen itererades efter test för att förbättra signalstyrka och passform.
-          Slutversionen gav stabil detektion under drift.
+          The design was iterated after testing to improve signal strength and fit.
+          The final version provided stable detection during operation.
         </p>
       </div>
     </div>
@@ -359,14 +359,14 @@
         <div class="videoWrap">
           <iframe
             src="https://www.youtube.com/embed/2D2PQL_NvOk"
-            title="Pre-test – motor i rigg"
+            title="Pre-test — motor on test rig"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
           </iframe>
         </div>
         <div class="videoMeta">
-          <b>Pre-test – motor i rigg</b>
-          Första test innan inmontering.
+          <b>Pre-test — motor on test rig</b>
+          First test before installation.
         </div>
       </article>
 
@@ -374,14 +374,14 @@
         <div class="videoWrap">
           <iframe
             src="https://www.youtube.com/embed/SbzqgAn4Eh4"
-            title="Körning – bilen i drift"
+            title="Driving — vehicle in operation"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen>
           </iframe>
         </div>
         <div class="videoMeta">
-          <b>Körning – bilen i drift</b>
-          Bilen i drift med färdig motorintegration.
+          <b>Driving — vehicle in operation</b>
+          Vehicle running with the completed motor integration.
         </div>
       </article>
     </div>
@@ -389,7 +389,7 @@
 
   <!-- GALLERY -->
   <section class="card pad" id="gallery" style="margin-top:14px">
-    <h2>Bilder</h2>
+    <h2>Images</h2>
     <div class="gallery" id="galleryGrid"></div>
   </section>
 
@@ -400,7 +400,7 @@
       <a class="btn primary"
          href="https://www.linkedin.com/feed/update/urn:li:activity:7311366460423995393/"
          target="_blank" rel="noreferrer">
-        Öppna LinkedIn-inlägg
+        Open LinkedIn post
       </a>
     </div>
 
@@ -408,18 +408,18 @@
       <img
         src="media/uu-linkedin.png"
         data-full="media/uu-linkedin.png"
-        alt="LinkedIn-inlägg från Uppsala universitet"
+        alt="LinkedIn post from Uppsala University"
       />
-      <div class="zoomHint">Klicka för att förstora</div>
+      <div class="zoomHint">Click to enlarge</div>
     </div>
 
     <figcaption style="text-align:center; margin-top:10px;">
-      Uppsala universitet lyfter projektet.
+      Uppsala University highlights the project.
     </figcaption>
   </section>
 
   <footer>
-    <div>© <span id="year"></span> Elmotor</div>
+    <div>© <span id="year"></span> Electric Motor</div>
     <div>GitHub Pages</div>
   </footer>
 </main>
@@ -433,12 +433,13 @@
     {
       src: "media/hall_bracket_cad.jpg",
       full: "media/hall_bracket_cad.jpg",
-      caption: "CAD-modell av hallsensorfäste. Hallsensorerna ska in i hålet i mitten tillräckligt långt för att känna av magnetfältet från rotorn. Denna design är anpassad för att sitta fast i statorn med endast friktion."
+      caption:
+        "CAD model of the hall sensor mount. The hall sensors are inserted into the center opening and positioned far enough to detect the rotor’s magnetic field. This design is intended to seat in the stator using friction only."
     },
     {
       src: "media/motor.jpg",
       full: "media/motor.jpg",
-      caption: "Motorn i projektet."
+      caption: "The motor used in the project."
     }
   ];
 
@@ -446,10 +447,16 @@
   const lightbox = document.getElementById("lightbox");
   const lightboxImg = document.getElementById("lightboxImg");
 
+  function esc(s){
+    return (s || "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
   galleryGrid.innerHTML = photos.map(p => `
     <figure>
-      <img src="${p.src}" data-full="${p.full}" alt="">
-      <figcaption>${p.caption}</figcaption>
+      <img src="${esc(p.src)}" data-full="${esc(p.full)}" alt="">
+      <figcaption>${esc(p.caption)}</figcaption>
     </figure>
   `).join("");
 
