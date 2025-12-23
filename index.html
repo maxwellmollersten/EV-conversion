@@ -18,17 +18,23 @@
       --max: 980px;
       --a:#7aa2ff;
       --b:#6ef3c5;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background:
+
+      /* Samma gradient som bakgrunden (använd överallt) */
+      --bg-gradient:
         radial-gradient(900px 500px at 10% 0%, rgba(122,162,255,.20), transparent 60%),
         radial-gradient(900px 600px at 90% 5%, rgba(110,243,197,.16), transparent 60%),
         linear-gradient(180deg, #050714 0%, var(--bg) 55%, #05060d 100%);
     }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background: var(--bg-gradient);
+    }
+
     a{color:inherit}
     .wrap{max-width:var(--max); margin:0 auto; padding:26px 18px 60px}
 
@@ -38,25 +44,76 @@
       background: rgba(5,7,20,.55);
       border-bottom:1px solid var(--line);
     }
+
     .topbar{
       max-width:var(--max);
       margin:0 auto;
       padding:12px 18px;
-      display:flex; justify-content:space-between; align-items:center;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
     }
-    .brand{display:flex; gap:10px; font-weight:800; text-decoration:none; align-items:center}
+
+    .brand{
+      display:flex;
+      gap:10px;
+      font-weight:800;
+      text-decoration:none;
+      align-items:center;
+      white-space:nowrap;
+    }
+
     .logo{
       width:14px; height:14px; border-radius:50%;
       background: linear-gradient(135deg, var(--a), var(--b));
+      box-shadow: 0 0 0 6px rgba(122,162,255,.10);
     }
-    nav{display:flex; gap:10px; flex-wrap:wrap}
+
+    nav{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
     .pill{
       padding:8px 10px;
       border-radius:999px;
       color:var(--muted);
       text-decoration:none;
+      border:1px solid transparent;
     }
-    .pill:hover{color:var(--text)}
+    .pill:hover{
+      color:var(--text);
+      border-color:var(--line);
+      background:rgba(255,255,255,.04);
+    }
+
+    /* "Alla projekt" som pill-knapp (som din screenshot) */
+    .pill.back{
+      padding:10px 16px;
+      border-radius:999px;
+      color: rgba(234,240,255,.95);
+      border: 1px solid rgba(255,255,255,.22);
+      background: linear-gradient(
+        135deg,
+        rgba(122,162,255,.22),
+        rgba(110,243,197,.10)
+      );
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.06) inset,
+        0 10px 26px rgba(0,0,0,.35),
+        0 0 22px rgba(122,162,255,.22);
+      backdrop-filter: blur(10px);
+    }
+    .pill.back:hover{
+      border-color: rgba(255,255,255,.32);
+      background: linear-gradient(
+        135deg,
+        rgba(122,162,255,.28),
+        rgba(110,243,197,.12)
+      );
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 12px 30px rgba(0,0,0,.38),
+        0 0 28px rgba(122,162,255,.28);
+    }
 
     .card{
       border-radius:var(--radius);
@@ -64,6 +121,7 @@
       background: rgba(12,18,34,.72);
       box-shadow: var(--shadow);
     }
+
     .pad{padding:22px}
     h1{margin:0 0 10px; font-size:36px}
     h2{margin:0 0 10px}
@@ -75,6 +133,7 @@
       padding:6px 10px;
       border-radius:999px;
       border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
     }
 
     .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
@@ -138,6 +197,8 @@
       max-height:92vh;
       border-radius:16px;
       cursor: zoom-out;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 20px 70px rgba(0,0,0,.55);
     }
 
     /* Video (Shorts) */
@@ -152,27 +213,36 @@
     .videoCard{
       border-radius:14px;
       border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      background: var(--bg-gradient); /* samma gradient som bakgrund */
       overflow:hidden;
     }
+
+    /* 75% kortare utan gap + behåll “Shorts-känsla” via beskärning */
     .videoWrap{
-      width:100%;
-      aspect-ratio: 9/16;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;          /* kortare kort */
+      overflow: hidden;            /* klipp bort */
       background: rgba(0,0,0,.25);
-      transform: scaleY(0.75);
-      transform-origin: top;
     }
     .videoWrap iframe{
-      width:100%;
-      height:100%;
-      border:0;
-      display:block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 133.333%;            /* 1/0.75 för att fylla */
+      border: 0;
+      display: block;
+      transform: translateY(-12.5%); /* centrerad beskärning */
     }
+
     .videoMeta{
       padding:12px 14px;
       color:var(--muted);
       line-height:1.45;
       font-size:13px;
+      background: rgba(12,18,34,.55);
+      border-top:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(10px);
     }
     .videoMeta b{
       display:block;
@@ -224,10 +294,10 @@
 <header>
   <div class="topbar">
     <a class="brand" href="#top">
-      <span class="logo"></span>
+      <span class="logo" aria-hidden="true"></span>
       <span>Elmotor · Hallsensorfäste</span>
     </a>
-    <nav>
+    <nav aria-label="Navigering">
       <a class="pill back" href="https://maxwellmollersten.github.io/projects/">← Alla projekt</a>
       <a class="pill" href="#overview">Översikt</a>
       <a class="pill" href="#mywork">Min del</a>
@@ -253,8 +323,6 @@
       under test och drift.
     </p>
 
-
-      
     <div class="chips">
       <span class="chip">BLDC</span>
       <span class="chip">Hallsensorer</span>
@@ -356,7 +424,7 @@
   </footer>
 </main>
 
-<div class="lightbox" id="lightbox">
+<div class="lightbox" id="lightbox" aria-hidden="true">
   <img id="lightboxImg" alt="">
 </div>
 
@@ -388,10 +456,13 @@
   function openLightbox(src){
     lightboxImg.src = src;
     lightbox.classList.add("open");
+    lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
   }
+
   function closeLightbox(){
     lightbox.classList.remove("open");
+    lightbox.setAttribute("aria-hidden", "true");
     lightboxImg.src = "";
     document.body.style.overflow = "";
   }
