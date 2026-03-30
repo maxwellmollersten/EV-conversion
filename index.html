@@ -78,11 +78,17 @@
       color:var(--muted);
       text-decoration:none;
       border:1px solid transparent;
+      transition: color .15s, border-color .15s, background .15s;
     }
     .pill:hover{
       color:var(--text);
       border-color:var(--line);
       background:rgba(255,255,255,.04);
+    }
+    .pill.active{
+      color:var(--a);
+      border-color:rgba(122,162,255,.30);
+      background:rgba(122,162,255,.08);
     }
 
     /* "All projects" pill button */
@@ -122,21 +128,30 @@
       box-shadow: var(--shadow);
     }
 
-    .pad{padding:22px}
-    h1{margin:0 0 10px; font-size:36px}
-    h2{margin:0 0 10px}
-    p{color:var(--muted); line-height:1.6}
+    .pad{padding:28px}
+    h1{
+      margin:0 0 12px;
+      font-size: clamp(28px, 3.8vw, 44px);
+      line-height:1.12;
+      background: linear-gradient(135deg, var(--text) 40%, var(--a));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    h2{margin:0 0 12px; font-size:22px; color:var(--a)}
+    p{color:var(--muted); line-height:1.65; margin:0 0 12px}
 
-    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+    .chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px}
     .chip{
       font-size:12px;
       padding:6px 10px;
       border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.04);
+      border:1px solid rgba(122,162,255,.25);
+      background: rgba(122,162,255,.07);
+      color:var(--a);
     }
 
-    .cta{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+    .cta{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap}
     .btn{
       padding:10px 12px;
       border-radius:12px;
@@ -155,7 +170,7 @@
     .grid{
       display:grid;
       grid-template-columns:1.2fr .8fr;
-      gap:14px;
+      gap:16px;
     }
     @media (max-width:860px){.grid{grid-template-columns:1fr}}
 
@@ -170,7 +185,8 @@
     .gallery{
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-      gap:14px;
+      gap:16px;
+      margin-top:16px;
     }
     .gallery img{
       width:100%;
@@ -201,38 +217,33 @@
       box-shadow: 0 20px 70px rgba(0,0,0,.55);
     }
 
-    /* Video (Shorts) */
     .videoGrid{
       display:grid;
       grid-template-columns: 1fr 1fr;
-      gap:14px;
-      margin-top:12px;
+      gap:16px;
+      margin-top:16px;
     }
     @media (max-width:860px){ .videoGrid{grid-template-columns:1fr} }
 
     .videoCard{
       border-radius:14px;
       border:1px solid var(--line);
-      background: var(--bg-gradient);
+      background: rgba(12,18,34,.55);
       overflow:hidden;
     }
 
-    /* 75% shorter without gaps + keep “Shorts feel” via crop */
     .videoWrap{
       position: relative;
       width: 100%;
-      aspect-ratio: 3 / 4;
-      overflow: hidden;
-      background: rgba(0,0,0,.25);
+      aspect-ratio: 16 / 9;
+      background: rgba(0,0,0,.35);
     }
     .videoWrap iframe{
       position: absolute;
       inset: 0;
       width: 100%;
-      height: 133.333%;
+      height: 100%;
       border: 0;
-      display: block;
-      transform: translateY(-12.5%);
     }
 
     .videoMeta{
@@ -332,7 +343,7 @@
   </section>
 
   <!-- MY WORK -->
-  <section class="card pad" id="mywork" style="margin-top:14px">
+  <section class="card pad" id="mywork" style="margin-top:16px">
     <h2>My contribution: Hall sensor mount</h2>
     <div class="grid">
       <div class="subcard">
@@ -352,7 +363,7 @@
   </section>
 
   <!-- VIDEOS -->
-  <section class="card pad" id="videos" style="margin-top:14px">
+  <section class="card pad" id="videos" style="margin-top:16px">
     <h2>Video</h2>
     <div class="videoGrid">
       <article class="videoCard">
@@ -388,13 +399,13 @@
   </section>
 
   <!-- GALLERY -->
-  <section class="card pad" id="gallery" style="margin-top:14px">
+  <section class="card pad" id="gallery" style="margin-top:16px">
     <h2>Images</h2>
     <div class="gallery" id="galleryGrid"></div>
   </section>
 
   <!-- LINKEDIN -->
-  <section class="card pad" id="linkedin" style="margin-top:14px">
+  <section class="card pad" id="linkedin" style="margin-top:16px">
     <h2>LinkedIn</h2>
     <div class="cta">
       <a class="btn primary"
@@ -484,6 +495,20 @@
   });
 
   document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Active nav highlight via IntersectionObserver
+  const navLinks = document.querySelectorAll('nav .pill:not(.back)');
+  const sections = document.querySelectorAll('section[id]');
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+        if(link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -60% 0px' });
+  sections.forEach(s => navObserver.observe(s));
 </script>
 </body>
 </html>
